@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สื่อการเรียนรู้: แอปพลิเคชันและสถาปัตยกรรมระบบ by ครูเจอาร์</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl font-bold text-center mb-4">📱 แอปพลิเคชันและสถาปัตยกรรมระบบ by ครูเจอาร์</h1>
+            <p class="text-xl text-center opacity-90">เรียนรู้เกี่ยวกับแอปพลิเคชันสมัยใหม่และโครงสร้างระบบ</p>
+        </div>
+    </header>
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap justify-center space-x-2 py-4">
+                <button onclick="showSection('intro')" class="nav-btn bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors m-1">🏠 บทนำ</button>
+                <button onclick="showSection('types')" class="nav-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors m-1">📋 ประเภทแอป</button>
+                <button onclick="showSection('comparison')" class="nav-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors m-1">⚖️ เปรียบเทียบ</button>
+                <button onclick="showSection('architecture')" class="nav-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors m-1">🏗️ สถาปัตยกรรม</button>
+                <button onclick="showSection('development')" class="nav-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors m-1">💻 การพัฒนา</button>
+                <button onclick="showSection('quiz')" class="nav-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors m-1">🎯 แบบทดสอบ</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-6 py-8">
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="bg-gray-200 rounded-full h-2">
+                <div id="progressBar" class="progress-bar bg-blue-500 h-2 rounded-full" style="width: 16.67%"></div>
+            </div>
+            <p class="text-center text-sm text-gray-600 mt-2">ความคืบหน้าการเรียนรู้</p>
+        </div>
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="tab-content active">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🌟 ความหมายและความสำคัญของแอปพลิเคชัน</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card-hover bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-4">📖 ความหมาย</h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            <strong>แอปพลิเคชัน (Application)</strong> คือ โปรแกรมคอมพิวเตอร์ที่ออกแบบมาเพื่อช่วยให้ผู้ใช้สามารถทำงานหรือกิจกรรมต่างๆ ได้อย่างมีประสิทธิภาพ เช่น การทำงาน การเรียนรู้ การสื่อสาร หรือการบันเทิง
+                        </p>
+                    </div>
+                    
+                    <div class="card-hover bg-gradient-to-br from-green-50 to-emerald-100 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold text-green-800 mb-4">⭐ ความสำคัญ</h3>
+                        <ul class="text-gray-700 space-y-2">
+                            <li>• เพิ่มประสิทธิภาพในการทำงาน</li>
+                            <li>• ลดเวลาและต้นทุนในการดำเนินงาน</li>
+                            <li>• เชื่อมโยงผู้คนทั่วโลก</li>
+                            <li>• สร้างโอกาสทางธุรกิจใหม่</li>
+                            <li>• ปรับปรุงคุณภาพชีวิต</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg">
+                    <h4 class="text-lg font-semibold text-yellow-800 mb-3">💡 ตัวอย่างแอปพลิเคชันในชีวิตประจำวัน</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-2xl mb-2">💬</div>
+                            <p class="text-sm font-medium">LINE, WhatsApp</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-2xl mb-2">🛒</div>
+                            <p class="text-sm font-medium">Shopee, Lazada</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-2xl mb-2">🎵</div>
+                            <p class="text-sm font-medium">Spotify, YouTube</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <div class="text-2xl mb-2">🏦</div>
+                            <p class="text-sm font-medium">Mobile Banking</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Types of Applications -->
+        <section id="types" class="tab-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">📱 ประเภทของแอปพลิเคชัน</h2>
+                
+                <div class="space-y-8">
+                    <!-- Web Applications -->
+                    <div class="card-hover border-2 border-blue-200 rounded-lg p-6 bg-blue-50">
+                        <h3 class="text-2xl font-bold text-blue-800 mb-4">🌐 เว็บแอปพลิเคชัน (Web Application)</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-blue-700 mb-2">คุณสมบัติ:</h4>
+                                <ul class="text-gray-700 space-y-1">
+                                    <li>• ทำงานผ่านเว็บเบราว์เซอร์</li>
+                                    <li>• ไม่ต้องติดตั้งโปรแกรม</li>
+                                    <li>• เข้าถึงได้จากทุกอุปกรณ์</li>
+                                    <li>• อัปเดตแบบเรียลไทม์</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-700 mb-2">ตัวอย่าง:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Gmail</span>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Facebook</span>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Google Docs</span>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Netflix</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Applications -->
+                    <div class="card-hover border-2 border-green-200 rounded-lg p-6 bg-green-50">
+                        <h3 class="text-2xl font-bold text-green-800 mb-4">📱 แอปบนอุปกรณ์พกพา (Mobile Application)</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-green-700 mb-2">คุณสมบัติ:</h4>
+                                <ul class="text-gray-700 space-y-1">
+                                    <li>• ออกแบบสำหรับมือถือโดยเฉพาะ</li>
+                                    <li>• ใช้ฟีเจอร์ของอุปกรณ์ได้เต็มที่</li>
+                                    <li>• ทำงานได้แม้ไม่มีอินเทอร์เน็ต</li>
+                                    <li>• ประสิทธิภาพสูง</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-green-700 mb-2">ตัวอย่าง:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Instagram</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">TikTok</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Uber</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Grab</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Applications -->
+                    <div class="card-hover border-2 border-purple-200 rounded-lg p-6 bg-purple-50">
+                        <h3 class="text-2xl font-bold text-purple-800 mb-4">💻 แอปพลิเคชันเดสก์ท็อป (Desktop Application)</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-purple-700 mb-2">คุณสมบัติ:</h4>
+                                <ul class="text-gray-700 space-y-1">
+                                    <li>• ติดตั้งบนคอมพิวเตอร์</li>
+                                    <li>• ประสิทธิภาพสูงสุด</li>
+                                    <li>• ใช้ทรัพยากรเครื่องได้เต็มที่</li>
+                                    <li>• เหมาะสำหรับงานซับซ้อน</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-700 mb-2">ตัวอย่าง:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Photoshop</span>
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Microsoft Office</span>
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">AutoCAD</span>
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Steam</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Comparison -->
+        <section id="comparison" class="tab-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">⚖️ เปรียบเทียบ Native App, Web App และ Hybrid App</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300 rounded-lg overflow-hidden">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="border border-gray-300 p-4 text-left font-semibold">หัวข้อเปรียบเทียบ</th>
+                                <th class="border border-gray-300 p-4 text-center font-semibold text-blue-700">Native App</th>
+                                <th class="border border-gray-300 p-4 text-center font-semibold text-green-700">Web App</th>
+                                <th class="border border-gray-300 p-4 text-center font-semibold text-purple-700">Hybrid App</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">การพัฒนา</td>
+                                <td class="border border-gray-300 p-4 text-center">แยกตาม Platform</td>
+                                <td class="border border-gray-300 p-4 text-center">พัฒนาครั้งเดียว</td>
+                                <td class="border border-gray-300 p-4 text-center">พัฒนาครั้งเดียว</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">ประสิทธิภาพ</td>
+                                <td class="border border-gray-300 p-4 text-center">⭐⭐⭐⭐⭐</td>
+                                <td class="border border-gray-300 p-4 text-center">⭐⭐⭐</td>
+                                <td class="border border-gray-300 p-4 text-center">⭐⭐⭐⭐</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">การเข้าถึงฟีเจอร์อุปกรณ์</td>
+                                <td class="border border-gray-300 p-4 text-center">เต็มรูปแบบ</td>
+                                <td class="border border-gray-300 p-4 text-center">จำกัด</td>
+                                <td class="border border-gray-300 p-4 text-center">ส่วนใหญ่</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">ต้นทุนการพัฒนา</td>
+                                <td class="border border-gray-300 p-4 text-center">สูง</td>
+                                <td class="border border-gray-300 p-4 text-center">ต่ำ</td>
+                                <td class="border border-gray-300 p-4 text-center">ปานกลาง</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">การอัปเดต</td>
+                                <td class="border border-gray-300 p-4 text-center">ผ่าน App Store</td>
+                                <td class="border border-gray-300 p-4 text-center">ทันที</td>
+                                <td class="border border-gray-300 p-4 text-center">ผ่าน App Store</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="border border-gray-300 p-4 font-medium">การทำงานออฟไลน์</td>
+                                <td class="border border-gray-300 p-4 text-center">✅ ดีเยี่ยม</td>
+                                <td class="border border-gray-300 p-4 text-center">❌ จำกัด</td>
+                                <td class="border border-gray-300 p-4 text-center">✅ ดี</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 grid md:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="font-bold text-blue-800 mb-3">📱 Native App</h4>
+                        <p class="text-sm text-gray-700 mb-3">เหมาะสำหรับ:</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• เกม</li>
+                            <li>• แอปที่ต้องการประสิทธิภาพสูง</li>
+                            <li>• แอปที่ใช้ฟีเจอร์อุปกรณ์เยอะ</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+                        <h4 class="font-bold text-green-800 mb-3">🌐 Web App</h4>
+                        <p class="text-sm text-gray-700 mb-3">เหมาะสำหรับ:</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• เว็บไซต์ธุรกิจ</li>
+                            <li>• ระบบจัดการข้อมูล</li>
+                            <li>• แอปที่ต้องการอัปเดตบ่อย</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="font-bold text-purple-800 mb-3">🔄 Hybrid App</h4>
+                        <p class="text-sm text-gray-700 mb-3">เหมาะสำหรับ:</p>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Startup ที่มีง예산จำกัด</li>
+                            <li>• แอปที่ต้องการครอบคลุมหลาย Platform</li>
+                            <li>• แอปที่มีฟีเจอร์ไม่ซับซ้อน</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: System Architecture -->
+        <section id="architecture" class="tab-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🏗️ สถาปัตยกรรมของระบบ</h2>
+                
+                <!-- Client-Server Model -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-blue-800 mb-4">🔄 แนวคิด Client-Server Model</h3>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg mb-6">
+                        <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+                            <div class="text-center">
+                                <div class="bg-blue-500 text-white p-4 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">💻</span>
+                                </div>
+                                <h4 class="font-bold text-blue-800">Client (ไคลเอนต์)</h4>
+                                <p class="text-sm text-gray-600">ผู้ขอใช้บริการ</p>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <div class="text-blue-500">→</div>
+                                <span class="text-sm bg-white px-3 py-1 rounded-full shadow">Request</span>
+                                <div class="text-blue-500">→</div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <div class="bg-green-500 text-white p-4 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">🖥️</span>
+                                </div>
+                                <h4 class="font-bold text-green-800">Server (เซิร์ฟเวอร์)</h4>
+                                <p class="text-sm text-gray-600">ผู้ให้บริการ</p>
+                            </div>
+                            
+                            <div class="flex items-center space-x-2">
+                                <div class="text-green-500">←</div>
+                                <span class="text-sm bg-white px-3 py-1 rounded-full shadow">Response</span>
+                                <div class="text-green-500">←</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-blue-800 mb-3">💻 Client-Side Processing</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li>• <strong>ความหมาย:</strong> การประมวลผลที่เกิดขึ้นในอุปกรณ์ของผู้ใช้</li>
+                                <li>• <strong>ข้อดี:</strong> เร็ว, ลดภาระเซิร์ฟเวอร์, ทำงานออฟไลน์ได้</li>
+                                <li>• <strong>ข้อเสีย:</strong> ขึ้นกับสเปคอุปกรณ์, ความปลอดภัยต่ำ</li>
+                                <li>• <strong>ตัวอย่าง:</strong> การตรวจสอบฟอร์ม, เกม, การคำนวณง่ายๆ</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-green-800 mb-3">🖥️ Server-Side Processing</h4>
+                            <ul class="text-gray-700 space-y-2">
+                                <li>• <strong>ความหมาย:</strong> การประมวลผลที่เกิดขึ้นในเซิร์ฟเวอร์</li>
+                                <li>• <strong>ข้อดี:</strong> ปลอดภัย, ประสิทธิภาพสม่ำเสมอ, จัดการข้อมูลได้ดี</li>
+                                <li>• <strong>ข้อเสีย:</strong> ต้องมีอินเทอร์เน็ต, ช้ากว่า, ต้นทุนสูง</li>
+                                <li>• <strong>ตัวอย่าง:</strong> ฐานข้อมูล, การชำระเงิน, การยืนยันตัวตน</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Architecture Types -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-purple-800 mb-4">🏛️ ประเภทของสถาปัตยกรรมระบบ</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Monolithic -->
+                        <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+                            <h4 class="text-xl font-bold text-purple-700 mb-3">🏢 Monolithic Architecture</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-gray-700 mb-3">ระบบที่รวมทุกส่วนไว้ในที่เดียว</p>
+                                    <div class="bg-purple-100 p-4 rounded text-center">
+                                        <div class="text-purple-600 font-mono text-sm">
+                                            [UI + Logic + Database]
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-green-600 mb-2">ข้อดี:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• พัฒนาง่าย</li>
+                                        <li>• Deploy ง่าย</li>
+                                        <li>• เหมาะกับโปรเจกต์เล็ก</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-red-600 mb-2">ข้อเสีย:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• ขยายยาก</li>
+                                        <li>• แก้ไขส่วนหนึ่งกระทบทั้งระบบ</li>
+                                        <li>• เทคโนโลยีเดียว</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Microservices -->
+                        <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-blue-300 transition-colors">
+                            <h4 class="text-xl font-bold text-blue-700 mb-3">🔧 Microservices Architecture</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-gray-700 mb-3">แยกระบบเป็นบริการย่อยๆ หลายตัว</p>
+                                    <div class="bg-blue-100 p-4 rounded text-center">
+                                        <div class="text-blue-600 font-mono text-xs space-y-1">
+                                            <div>[User Service]</div>
+                                            <div>[Payment Service]</div>
+                                            <div>[Order Service]</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-green-600 mb-2">ข้อดี:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• ขยายได้ดี</li>
+                                        <li>• ใช้เทคโนโลยีหลากหลาย</li>
+                                        <li>• แก้ไขไม่กระทบกัน</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-red-600 mb-2">ข้อเสีย:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• ซับซ้อน</li>
+                                        <li>• จัดการยาก</li>
+                                        <li>• ต้นทุนสูง</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Serverless -->
+                        <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-green-300 transition-colors">
+                            <h4 class="text-xl font-bold text-green-700 mb-3">☁️ Serverless Architecture</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-gray-700 mb-3">ใช้ฟังก์ชันที่รันเมื่อต้องการเท่านั้น</p>
+                                    <div class="bg-green-100 p-4 rounded text-center">
+                                        <div class="text-green-600 font-mono text-xs">
+                                            Function as a Service (FaaS)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-green-600 mb-2">ข้อดี:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• จ่ายตามใช้งาน</li>
+                                        <li>• ขยายอัตโนมัติ</li>
+                                        <li>• ไม่ต้องจัดการเซิร์ฟเวอร์</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-red-600 mb-2">ข้อเสีย:</p>
+                                    <ul class="text-sm text-gray-600 space-y-1">
+                                        <li>• Cold Start</li>
+                                        <li>• จำกัดเวลาทำงาน</li>
+                                        <li>• ขึ้นกับ Provider</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Software Development -->
+        <section id="development" class="tab-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">💻 การพัฒนาซอฟต์แวร์เบื้องต้น</h2>
+                
+                <!-- Development Process -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-indigo-800 mb-4">🔄 กระบวนการพัฒนาซอฟต์แวร์</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-red-50 p-4 rounded-lg text-center border-l-4 border-red-400">
+                            <div class="text-2xl mb-2">📋</div>
+                            <h4 class="font-bold text-red-700">1. Planning</h4>
+                            <p class="text-sm text-gray-600 mt-2">วางแผนและวิเคราะห์ความต้องการ</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg text-center border-l-4 border-blue-400">
+                            <div class="text-2xl mb-2">🎨</div>
+                            <h4 class="font-bold text-blue-700">2. Design</h4>
+                            <p class="text-sm text-gray-600 mt-2">ออกแบบ UI/UX และสถาปัตยกรรม</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center border-l-4 border-green-400">
+                            <div class="text-2xl mb-2">⚙️</div>
+                            <h4 class="font-bold text-green-700">3. Development</h4>
+                            <p class="text-sm text-gray-600 mt-2">เขียนโค้ดและพัฒนาระบบ</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center border-l-4 border-purple-400">
+                            <div class="text-2xl mb-2">🧪</div>
+                            <h4 class="font-bold text-purple-700">4. Testing</h4>
+                            <p class="text-sm text-gray-600 mt-2">ทดสอบและแก้ไขข้อผิดพลาด</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Stack -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-orange-800 mb-4">🛠️ Technology Stack</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-lg">
+                            <h4 class="text-xl font-bold text-orange-700 mb-4">Frontend (ส่วนหน้า)</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-orange-500 text-white px-2 py-1 rounded text-sm">HTML</span>
+                                    <span class="text-gray-600">โครงสร้างเว็บไซต์</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-blue-500 text-white px-2 py-1 rounded text-sm">CSS</span>
+                                    <span class="text-gray-600">จัดรูปแบบและสีสัน</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-yellow-500 text-white px-2 py-1 rounded text-sm">JavaScript</span>
+                                    <span class="text-gray-600">ทำให้เว็บมีปฏิสัมพันธ์</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-cyan-500 text-white px-2 py-1 rounded text-sm">React</span>
+                                    <span class="text-gray-600">Framework สำหรับสร้าง UI</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-lg">
+                            <h4 class="text-xl font-bold text-green-700 mb-4">Backend (ส่วนหลัง)</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded text-sm">Node.js</span>
+                                    <span class="text-gray-600">JavaScript บนเซิร์ฟเวอร์</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm">Python</span>
+                                    <span class="text-gray-600">ภาษาโปรแกรมมิ่งยอดนิยม</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-purple-600 text-white px-2 py-1 rounded text-sm">PHP</span>
+                                    <span class="text-gray-600">ภาษาสำหรับเว็บ</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <span class="bg-gray-600 text-white px-2 py-1 rounded text-sm">Database</span>
+                                    <span class="text-gray-600">จัดเก็บข้อมูล</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Development Methodologies -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold text-teal-800 mb-4">📊 วิธีการพัฒนาซอฟต์แวร์</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-teal-50 p-6 rounded-lg border-l-4 border-teal-400">
+                            <h4 class="text-xl font-bold text-teal-700 mb-3">🌊 Waterfall Model</h4>
+                            <p class="text-gray-700 mb-3">พัฒนาแบบเป็นขั้นตอน ทำทีละขั้น</p>
+                            <div class="space-y-2">
+                                <div class="bg-white p-2 rounded text-sm">1. Requirements → 2. Design → 3. Implementation → 4. Testing → 5. Deployment</div>
+                            </div>
+                            <div class="mt-3 text-sm">
+                                <span class="text-green-600">✅ เหมาะกับโปรเจกต์ที่ชัดเจน</span><br>
+                                <span class="text-red-600">❌ ยากต่อการเปลี่ยนแปลง</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-400">
+                            <h4 class="text-xl font-bold text-blue-700 mb-3">🔄 Agile Methodology</h4>
+                            <p class="text-gray-700 mb-3">พัฒนาแบบยืดหยุ่น ทำเป็น Sprint สั้นๆ</p>
+                            <div class="space-y-2">
+                                <div class="bg-white p-2 rounded text-sm">Sprint 1 → Sprint 2 → Sprint 3 → ...</div>
+                                <div class="text-xs text-gray-600">แต่ละ Sprint = 1-4 สัปดาห์</div>
+                            </div>
+                            <div class="mt-3 text-sm">
+                                <span class="text-green-600">✅ ยืดหยุ่น ปรับเปลี่ยนได้</span><br>
+                                <span class="text-red-600">❌ ต้องการการสื่อสารดี</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Version Control -->
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">📝 Version Control System</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="bg-orange-500 text-white p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                                <span class="font-bold">Git</span>
+                            </div>
+                            <h4 class="font-semibold">Git</h4>
+                            <p class="text-sm text-gray-600">ระบบควบคุมเวอร์ชัน</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-gray-800 text-white p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                                <span class="font-bold">GH</span>
+                            </div>
+                            <h4 class="font-semibold">GitHub</h4>
+                            <p class="text-sm text-gray-600">แพลตฟอร์มแชร์โค้ด</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="bg-blue-600 text-white p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-2">
+                                <span class="font-bold">GL</span>
+                            </div>
+                            <h4 class="font-semibold">GitLab</h4>
+                            <p class="text-sm text-gray-600">DevOps Platform</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Quiz -->
+        <section id="quiz" class="tab-content">
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🎯 แบบทดสอบความเข้าใจ</h2>
+                
+                <div id="quizContainer">
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-lg font-semibold">คำถามที่ <span id="currentQuestion">1</span> จาก <span id="totalQuestions">10</span></span>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">คะแนน: <span id="score">0</span></span>
+                        </div>
+                        <div class="bg-gray-200 rounded-full h-2 mb-4">
+                            <div id="quizProgress" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                        </div>
+                    </div>
+
+                    <div id="questionContainer" class="mb-6">
+                        <h3 id="questionText" class="text-xl font-semibold text-gray-800 mb-4"></h3>
+                        <div id="optionsContainer" class="space-y-3"></div>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button id="prevBtn" onclick="previousQuestion()" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors" disabled>ก่อนหน้า</button>
+                        <button id="nextBtn" onclick="nextQuestion()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors" disabled>ถัดไป</button>
+                    </div>
+                </div>
+
+                <div id="resultContainer" class="hidden">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <h3 class="text-2xl font-bold text-green-600 mb-4">เสร็จสิ้นแบบทดสอบ!</h3>
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+                            <p class="text-lg">คะแนนของคุณ: <span id="finalScore" class="font-bold text-green-600"></span> จาก 10 คะแนน</p>
+                            <p id="scoreMessage" class="text-gray-600 mt-2"></p>
+                        </div>
+                        <button onclick="restartQuiz()" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">ทำแบบทดสอบใหม่</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="gradient-bg text-white py-8 mt-12">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-lg mb-2">🎓 สื่อการเรียนรู้: แอปพลิเคชันและสถาปัตยกรรมระบบ</p>
+            <p class="opacity-80">ผู้พัฒนาระบบ คุณครูปฎิภาณ พานทอง</p>
+        </div>
+    </footer>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                question: "แอปพลิเคชันคืออะไร?",
+                options: [
+                    "โปรแกรมคอมพิวเตอร์ที่ช่วยให้ผู้ใช้ทำงานได้อย่างมีประสิทธิภาพ",
+                    "ระบบปฏิบัติการของคอมพิวเตอร์",
+                    "ฮาร์ดแวร์ของคอมพิวเตอร์",
+                    "เครือข่ายอินเทอร์เน็ต"
+                ],
+                correct: 0
+            },
+            {
+                question: "ข้อดีของ Web Application คืออะไร?",
+                options: [
+                    "ต้องติดตั้งโปรแกรม",
+                    "ทำงานผ่านเว็บเบราว์เซอร์และไม่ต้องติดตั้ง",
+                    "ใช้ได้เฉพาะมือถือ",
+                    "ไม่สามารถอัปเดตได้"
+                ],
+                correct: 1
+            },
+            {
+                question: "Native App มีข้อดีอะไรเหนือกว่า Web App?",
+                options: [
+                    "พัฒนาครั้งเดียวใช้ได้หลาย Platform",
+                    "ไม่ต้องติดตั้ง",
+                    "ประสิทธิภาพสูงและเข้าถึงฟีเจอร์อุปกรณ์ได้เต็มรูปแบบ",
+                    "อัปเดตได้ทันที"
+                ],
+                correct: 2
+            },
+            {
+                question: "Hybrid App เหมาะสำหรับใคร?",
+                options: [
+                    "บริษัทใหญ่ที่มีงบประมาณมาก",
+                    "Startup ที่มีงบประมาณจำกัดและต้องการครอบคลุมหลาย Platform",
+                    "ผู้ที่ต้องการประสิทธิภาพสูงสุด",
+                    "ผู้ที่ไม่ต้องการใช้ฟีเจอร์อุปกรณ์"
+                ],
+                correct: 1
+            },
+            {
+                question: "Client-Server Model คืออะไร?",
+                options: [
+                    "การทำงานบนเครื่องเดียว",
+                    "แนวคิดที่มี Client ขอบริการจาก Server",
+                    "การเก็บข้อมูลในเครื่อง",
+                    "การทำงานแบบออฟไลน์"
+                ],
+                correct: 1
+            },
+            {
+                question: "ข้อดีของ Client-Side Processing คืออะไร?",
+                options: [
+                    "ปลอดภัยสูง",
+                    "เร็วและลดภาระเซิร์ฟเวอร์",
+                    "จัดการข้อมูลได้ดี",
+                    "ต้องมีอินเทอร์เน็ตเสมอ"
+                ],
+                correct: 1
+            },
+            {
+                question: "Microservices Architecture มีข้อดีอะไร?",
+                options: [
+                    "พัฒนาง่าย",
+                    "ใช้เทคโนโลยีเดียว",
+                    "ขยายได้ดีและใช้เทคโนโลยีหลากหลาย",
+                    "ต้นทุนต่ำ"
+                ],
+                correct: 2
+            },
+            {
+                question: "Serverless Architecture เหมาะกับงานแบบไหน?",
+                options: [
+                    "งานที่ต้องทำงานตลอดเวลา",
+                    "งานที่ต้องการควบคุมเซิร์ฟเวอร์เต็มรูปแบบ",
+                    "งานที่มีการใช้งานไม่สม่ำเสมอและต้องการประหยัดค่าใช้จ่าย",
+                    "งานที่ต้องการเวลาประมวลผลนาน"
+                ],
+                correct: 2
+            },
+            {
+                question: "Frontend ของเว็บไซต์ประกอบด้วยเทคโนโลยีอะไรบ้าง?",
+                options: [
+                    "HTML, CSS, JavaScript",
+                    "Python, PHP, Java",
+                    "MySQL, MongoDB",
+                    "Apache, Nginx"
+                ],
+                correct: 0
+            },
+            {
+                question: "Agile Methodology มีข้อดีอะไร?",
+                options: [
+                    "ทำทีละขั้นตอนแบบเป็นระเบียบ",
+                    "ยืดหยุ่นและปรับเปลี่ยนได้ง่าย",
+                    "ไม่ต้องสื่อสารกับลูกค้า",
+                    "ใช้เวลาพัฒนานาน"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        // Navigation Functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.tab-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-500', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            event.target.classList.remove('bg-gray-200', 'text-gray-700');
+            event.target.classList.add('bg-blue-500', 'text-white');
+            
+            // Update progress bar
+            const sections = ['intro', 'types', 'comparison', 'architecture', 'development', 'quiz'];
+            const currentIndex = sections.indexOf(sectionId);
+            const progress = ((currentIndex + 1) / sections.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Quiz Functions
+        function loadQuestion() {
+            const question = quizData[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            document.getElementById('totalQuestions').textContent = quizData.length;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-item p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-300 transition-colors';
+                optionDiv.innerHTML = `
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="answer" value="${index}" class="mr-3">
+                        <span>${option}</span>
+                    </label>
+                `;
+                optionDiv.onclick = () => selectAnswer(index, optionDiv);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            // Update progress
+            const progress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            document.getElementById('nextBtn').disabled = true;
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(answerIndex, optionElement) {
+            // Remove previous selection
+            document.querySelectorAll('.option-item').forEach(item => {
+                item.classList.remove('border-blue-500', 'bg-blue-50');
+            });
+            
+            // Add selection to clicked option
+            optionElement.classList.add('border-blue-500', 'bg-blue-50');
+            optionElement.querySelector('input').checked = true;
+            
+            selectedAnswer = answerIndex;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (selectedAnswer === null) return;
+            
+            // Check answer
+            if (selectedAnswer === quizData[currentQuestionIndex].correct) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+            
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex >= quizData.length) {
+                showResults();
+            } else {
+                loadQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('resultContainer').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = score;
+            
+            let message = '';
+            if (score >= 9) {
+                message = 'ยอดเยี่ยม! คุณเข้าใจเนื้อหาเป็นอย่างดี 🌟';
+            } else if (score >= 7) {
+                message = 'ดีมาก! คุณมีความเข้าใจในระดับดี 👍';
+            } else if (score >= 5) {
+                message = 'ผ่าน! แต่ควรทบทวนเนื้อหาเพิ่มเติม 📚';
+            } else {
+                message = 'ควรศึกษาเนื้อหาเพิ่มเติมและลองทำใหม่ 💪';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            
+            document.getElementById('score').textContent = '0';
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+            
+            loadQuestion();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestion();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9915a564338b8943',t:'MTc2MDkzMzIyMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
