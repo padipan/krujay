@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D PNG Character Select</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-color: #f59e0b; /* สีส้มทอง */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .hero, .footer {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(180deg, #111 0%, #050505 100%);
+        }
+
+        .hero h1 { font-size: 3.5rem; color: var(--accent-color); margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; color: #888; }
+
+        .horizontal-scroll-wrapper {
+            position: relative;
+            height: 400vh;
+        }
+
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .cards-track {
+            display: flex;
+            gap: 60px; /* เพิ่มระยะห่างเพราะตัวละครจะเด้งออกนอกกรอบ */
+            padding: 0 calc(50vw - 160px); 
+            will-change: transform;
+            align-items: center;
+        }
+
+        /* =========================================
+           โครงสร้างการ์ดแบบใหม่ (รองรับ PNG ทะลุกรอบ)
+           ========================================= */
+        .card {
+            position: relative;
+            width: 320px;
+            height: 480px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* จัดให้ตัวละครอยู่ติดขอบล่าง */
+            cursor: pointer;
+            /* สังเกตว่าเราเอา overflow: hidden; ออก เพื่อให้หัวตัวละครทะลุกรอบได้ */
+        }
+
+        /* พื้นหลังของการ์ด (แยกส่วนเพื่อไม่ให้ตัดรูป PNG) */
+        .card-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75%; /* ให้พื้นหลังสูงแค่ 75% ของความสูงทั้งหมด */
+            background: linear-gradient(145deg, #1f2937 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transition: all 0.5s ease-out;
+            z-index: 1;
+        }
+
+        /* เอฟเฟกต์เรืองแสงเมื่อเป็น Active */
+        .card.active .card-bg {
+            background: linear-gradient(145deg, #2d1b09 0%, #0f172a 100%);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
+        }
+
+        /* =========================================
+           รูปตัวละคร PNG แบบเด้งเล็ก-ใหญ่
+           ========================================= */
+        .char-sprite {
+            position: relative;
+            width: 130%; /* กว้างกว่าการ์ดเล็กน้อย */
+            max-height: 110%; /* สูงกว่าการ์ดเพื่อให้หัวทะลุกรอบ */
+            object-fit: contain;
+            z-index: 2; /* ให้อยู่หน้ากล่องพื้นหลัง */
+            
+            /* เริ่มต้น: ย่อขนาดลง (0.8) และกดต่ำลงไป */
+            transform: scale(0.8) translateY(40px);
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)) grayscale(80%) brightness(0.5);
+            
+            /* transition แบบ cubic-bezier ทำให้จังหวะเด้งมีน้ำหนัก (เด้งเกินแล้วหดกลับ) */
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        filter 0.5s ease, 
+                        opacity 0.5s ease;
+            opacity: 0.5;
+        }
+
+        /* เมื่อเลื่อนมาตรงกลาง: ขยายใหญ่ เด้งขึ้น และคืนสีสัน */
+        .card.active .char-sprite {
+            opacity: 1;
+            transform: scale(1.15) translateY(-10px); /* ขยายใหญ่และเด้งขึ้น */
+            filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8)) grayscale(0%) brightness(1.1);
+            
+            /* แอนิเมชันลอยเบาๆ (เริ่มหลังจากเด้งเสร็จ 0.6 วิ) */
+            animation: float 2.5s ease-in-out infinite alternate 0.6s;
+        }
+
+        @keyframes float {
+            0% { transform: scale(1.15) translateY(-10px); }
+            100% { transform: scale(1.15) translateY(-25px); }
+        }
+
+        /* เอฟเฟกต์ตอนเอาเมาส์ไปชี้ */
+        .card.active:hover .char-sprite {
+            transform: scale(1.25) translateY(-20px);
+            animation-play-state: paused; /* หยุดลอยชั่วคราวตอนชี้ */
+        }
+
+        /* ข้อมูลตัวละครในการ์ด */
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            z-index: 3;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .card.active .card-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-info h2 { font-size: 1.6rem; color: var(--accent-color); margin-bottom: 5px; text-shadow: 0 2px 4px #000; }
+        .card-info p { font-size: 0.9rem; color: #cbd5e1; }
+
+        /* =========================================
+           Modal (ป๊อปอัปเมื่อกดเลือกตัวละคร) - โค้ดเดิม
+           ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.4s ease;
+        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
+        .modal-content {
+            display: flex; background: #111; border: 2px solid var(--accent-color);
+            border-radius: 20px; overflow: hidden; max-width: 800px; width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.5); position: relative;
+            transform: scale(0.5) translateY(100px); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
+        .modal-img {
+            width: 40%;
+            object-fit: contain;
+            background: radial-gradient(circle, #333 0%, #111 100%); /* เพิ่มพื้นหลังให้กล่องรูปใน Modal */
+            padding: 20px;
+        }
+        .modal-details { width: 60%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .modal-details h2 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px; }
+        .modal-details p { font-size: 1.1rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 30px; }
+        .confirm-btn {
+            background: var(--accent-color); color: #000; border: none; padding: 15px 30px;
+            font-size: 1.2rem; font-weight: 700; border-radius: 10px; cursor: pointer; transition: all 0.3s;
+        }
+        .confirm-btn:hover { background: #fff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: #fff; cursor: pointer; }
+        .close-btn:hover { color: var(--accent-color); }
+        
+        @media (max-width: 768px) {
+            .modal-content { flex-direction: column; height: auto; }
+            .modal-img { width: 100%; height: 250px; }
+            .modal-details { width: 100%; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>ยินดีต้อนรับสู่เว็บไซต์</h1>
+        <p>คุณครูปฎิภาณ พานทอง</p>
+    </header>
+
+    <section class="horizontal-scroll-wrapper" id="scroll-wrapper">
+        <div class="sticky-container">
+            <div class="cards-track" id="cards-track">
+                
+                <div class="card">
+                    <div class="card-bg"></div>
+                    <img src="https://img5.pic.in.th/file/secure-sv1/imgjay001.png" alt="Lucario" class="char-sprite">
+                    <div class="card-info">
+                        <h2>ประวัติส่วนตัว</h2>
+                        <p>นายปฎิภาณ พานทอง ผู้สอนวิชาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยอาชีวศึกษาสุรินทร์</p>
+                         <button class="confirm-btn">คลิกดูรายละเอียด</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-bg"></div>
+                    <img src="https://img2.pic.in.th/imgjay002.png" alt="Charizard" class="char-sprite">
+                    <div class="card-info">
+                        <h2>ประวัติการศึกษา</h2>
+                        <p>จบการศึกษาในสาขาวิชาคอมพิวเตอร์ศึกษา คณะครุศาสตรบัณฑิต มหาวิทยาลัยราชภัฎร้อยเอ็ด</p>
+                         <button class="confirm-btn">คลิกดูรายละเอียด</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-bg"></div>
+                    <img src="https://img2.pic.in.th/imgjay003.png" alt="Articuno" class="char-sprite">
+                    <div class="card-info">
+                        <h2>ประวัติการทำงาน</h2>
+                        <p>ทำงานในหลายหน่วยงานที่เกี่ยวข้องกับการศึกษาตั้งแต่ปี พ.ศ.2560</p>
+                         <button class="confirm-btn">คลิกดูรายละเอียด</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-bg"></div>
+                    <img src="https://img5.pic.in.th/file/secure-sv1/imgjay004.png" alt="Gengar" class="char-sprite">
+                    <div class="card-info">
+                        <h2>ผลงานและการพัฒนาตนเอง</h2>
+                        <p>ผลงานด้านการสอนและการพัฒนาตนเองที่ใช้ในการทำงาน</p>
+                        <button class="confirm-btn">คลิกดูรายละเอียด</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <h2>คุณครูปฎิภาณ พานทอง แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยอาชีวศึกษาสุรินทร์</h2>
+    </footer>
+
+    <div class="modal-overlay" id="characterModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <img src="" alt="" class="modal-img" id="modalImage">
+            <div class="modal-details">
+                <h2 id="modalTitle">ชื่อตัวละคร</h2>
+                <p id="modalDesc">รายละเอียด...</p>
+                <button class="confirm-btn">ยืนยันการเลือก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ควบคุม Scroll และ Zoom
+        const wrapper = document.getElementById('scroll-wrapper');
+        const track = document.getElementById('cards-track');
+        const cards = document.querySelectorAll('.card');
+
+        window.addEventListener('scroll', () => {
+            const wrapperTop = wrapper.offsetTop;
+            const scrollDistance = wrapper.offsetHeight - window.innerHeight; 
+            const scrolled = window.scrollY - wrapperTop;
+
+            let percentage = scrolled / scrollDistance;
+            if (percentage < 0) percentage = 0;
+            if (percentage > 1) percentage = 1;
+
+            const maxScroll = track.scrollWidth - window.innerWidth;
+            track.style.transform = `translateX(-${maxScroll * percentage}px)`;
+
+            const windowCenter = window.innerWidth / 2;
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardCenter = rect.left + (rect.width / 2);
+                
+                if (Math.abs(windowCenter - cardCenter) < rect.width / 1.5) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+        });
+        window.dispatchEvent(new Event('scroll'));
+
+        // ควบคุม Pop-up Modal
+        const modalOverlay = document.getElementById('characterModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const imgSrc = card.querySelector('img').src;
+                const titleText = card.querySelector('h2').innerText;
+                const descText = card.querySelector('p').innerText;
+
+                modalImage.src = imgSrc;
+                modalTitle.innerText = titleText;
+                modalDesc.innerText = descText;
+
+                modalOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden'; 
+            });
+        });
+
+        const closeModal = () => {
+            modalOverlay.classList.remove('show');
+            document.body.style.overflow = 'auto'; 
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+    </script>
+</body>
+</html>
