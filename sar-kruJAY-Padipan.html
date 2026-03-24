@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAR รายงานผลการปฏิบัติงาน| ครูปฏิภาณ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8fafc;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header Section -->
+    <header class="gradient-bg text-white py-12 px-4 text-center shadow-lg">
+        <div class="max-w-4xl mx-auto">
+            <div class="mb-4 inline-block p-2 bg-white rounded-full shadow-sm">
+            <img 
+                 src="https://img2.pic.in.th/------42a0e9d800ab39a5.png" 
+                alt="Profile Picture" 
+                    class="w-24 h-24 rounded-full object-cover border-2 border-blue-50"
+                >
+</div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-yellow-300">รายงานผลการปฏิบัติงาน (SAR)</h1>
+            <p class="text-xl md:text-2xl font-light">คุณครูปฏิภาณ พานทอง</p>
+            <div class="mt-4 flex justify-center gap-4">
+                <span class="bg-blue-800/50 px-3 py-1 rounded-full text-sm border border-blue-400">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล
+                </span>
+                <span class="bg-blue-800/50 px-3 py-1 rounded-full text-sm border border-blue-400">วิทยาลัยอาชีวศึกษาสุรินทร์</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+           
+            <!-- ส่วนที่ 8: ไฟล์ SAR ฉบับเต็ม -->
+            <a href="https://drive.google.com/drive/folders/1n3tSjurf74MyEVCNlWjb7oY-vR396eFt?usp=sharing" class="block bg-blue-600 p-6 rounded-2xl shadow-lg card-hover transition-all duration-300 text-white">
+                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                    <i data-lucide="file-text"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">SAR 2568 ฉบับเต็ม</h3>
+                <p class="text-sm text-blue-100 mb-4">ดาวน์โหลดรายงานผลการปฏิบัติงานฉบับสมบูรณ์ (PDF)</p>
+                <span class="text-yellow-300 text-sm font-medium inline-flex items-center">
+                    ดาวน์โหลดไฟล์ <i data-lucide="download" class="w-4 h-4 ml-1"></i>
+                </span>
+            </a>
+
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-16 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                <i data-lucide="info" class="mr-2 text-blue-600"></i> เกี่ยวกับรายงานนี้
+            </h2>
+            <p class="text-slate-600 leading-relaxed mb-4">
+                รายงานฉบับนี้จัดทำขึ้นโดยนายปฎิภาณ พานทอง ครูแผนกวิชาเทคโนโลยีธุรกิจดิจทัล วิทยาลัยอาชีวศึกษาสุรินทร์ เพื่อนำเสนอผลการปฏิบัติงานตามมาตรฐานวิชาชีพครู ประจำปีการศึกษา 2568 
+                โดยครอบคลุมทั้งด้านการจัดการเรียนการสอน การพัฒนาคุณภาพผู้เรียน และการพัฒนาตนเองอย่างต่อเนื่อง
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="flex items-center text-slate-500">
+                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i> Email: padipan.pantong@gmail.com
+                </div>
+                <div class="flex items-center text-slate-500">
+                    <i data-lucide="phone" class="w-4 h-4 mr-2"></i> โทร: 064-2696048
+                </div>
+                <div class="flex items-center text-slate-500">
+                    <i data-lucide="calendar" class="w-4 h-4 mr-2"></i> อัปเดตล่าสุด: มีนาคม 2568
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-8 text-slate-400 text-sm">
+        &copy; 2026 SAR Teacher padipan pantong - All Rights Reserved.
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
