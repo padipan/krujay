@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS Core: ระบบปฏิบัติการแห่งอนาคตกับครูเจโว</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Light Futuristic / Quantum Lab (Slate-50, White Glass, Cyan-500, Slate-800) -->
+    <!-- Application Structure Plan: The SPA uses a tabbed "Control Center" layout. The 'Overview' tab introduces the concept with an interactive architectural stack. The 'Timeline' tab uses a step-by-step horizontal navigator for the 4 eras. The 'Core Functions' tab acts as a dashboard, where users can click 5 different modules to see simulated interactive demonstrations (like a dynamic CPU chart) of what the OS does. The 'OS Categories' tab uses a grid and a polar area chart to organize OS types. This structure transforms static text into an exploratory tech-interface, fitting the 'futuristic' request while remaining highly usable. -->
+    <!-- Visualization & Content Choices: 1. OS Architecture -> HTML/CSS Interactive Stack -> Goal: Organize relationships -> Justification: Clearer than plain text, shows layering. 2. History -> Horizontal Node Timeline -> Goal: Show change over time -> Justification: Encourages user to step through eras. 3. CPU Function -> Chart.js Real-time Line Chart -> Goal: Inform/Change -> Justification: Simulates a real task manager. 4. OS Types -> Chart.js Polar Area -> Goal: Compare -> Justification: Visually breaks down the 4 main categories. Library: Chart.js (NO SVG/Mermaid). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.05), transparent 25%);
+            background-attachment: fixed;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .neo-border {
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1) inset;
+            transition: all 0.3s ease;
+        }
+
+        .neo-border:hover {
+            border-color: rgba(6, 182, 212, 0.8);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2) inset, 0 0 10px rgba(6, 182, 212, 0.2);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 30vh;
+            min-height: 250px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .arch-layer {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .arch-layer:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.4);
+            z-index: 10;
+        }
+
+        .nav-btn.active {
+            background-color: #06b6d4;
+            color: white;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+            border-color: transparent;
+        }
+
+        .timeline-node.active {
+            background-color: #06b6d4;
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.2);
+            transform: scale(1.2);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #4ade80;
+        }
+
+        .blinking-cursor {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <header class="glass-panel sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded bg-cyan-500 text-white flex items-center justify-center font-bold text-xl shadow-[0_0_10px_rgba(6,182,212,0.6)]">OS</div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-800">NEXUS <span class="text-cyan-600 font-light">TERMINAL</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-2">
+                <button onclick="nav('overview')" id="btn-overview" class="nav-btn active px-4 py-2 rounded-md text-sm font-medium border border-slate-300 text-slate-600 hover:text-cyan-600 hover:border-cyan-300 transition-all">นิยามและโครงสร้าง</button>
+                <button onclick="nav('history')" id="btn-history" class="nav-btn px-4 py-2 rounded-md text-sm font-medium border border-slate-300 text-slate-600 hover:text-cyan-600 hover:border-cyan-300 transition-all">วิวัฒนาการ 4 ยุค</button>
+                <button onclick="nav('functions')" id="btn-functions" class="nav-btn px-4 py-2 rounded-md text-sm font-medium border border-slate-300 text-slate-600 hover:text-cyan-600 hover:border-cyan-300 transition-all">ศูนย์ควบคุมหน้าที่ 5 ประการ</button>
+                <button onclick="nav('types')" id="btn-types" class="nav-btn px-4 py-2 rounded-md text-sm font-medium border border-slate-300 text-slate-600 hover:text-cyan-600 hover:border-cyan-300 transition-all">ฐานข้อมูลประเภท OS</button>
+            </nav>
+            <div class="md:hidden">
+                <select onchange="nav(this.value)" class="glass-panel border-cyan-300 text-slate-700 text-sm rounded-md focus:ring-cyan-500 focus:border-cyan-500 block w-full p-2">
+                    <option value="overview">นิยามและโครงสร้าง</option>
+                    <option value="history">วิวัฒนาการ 4 ยุค</option>
+                    <option value="functions">ศูนย์ควบคุมหน้าที่ 5 ประการ</option>
+                    <option value="types">ฐานข้อมูลประเภท OS</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <section id="sec-overview" class="fade-in block">
+            <div class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">ระบบปฏิบัติการ (Operating System: OS)</h2>
+                <p class="text-lg text-slate-600 max-w-3xl">ระบบปฏิบัติการเปรียบเสมือน <strong class="text-cyan-700">"หัวใจและสมอง"</strong> ของอุปกรณ์เทคโนโลยีทุกชนิด หากไม่มีระบบปฏิบัติการ อุปกรณ์เหล่านั้นก็จะเป็นเพียงเศษเหล็กที่ไม่สามารถทำงานใด ๆ ได้เลย</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="glass-panel p-6 rounded-2xl neo-border">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">ระบบปฏิบัติการคืออะไร?</h3>
+                    <p class="text-slate-700 leading-relaxed mb-4">
+                        <strong>ระบบปฏิบัติการ (OS)</strong> คือ ซอฟต์แวร์ระบบ (System Software) ที่ทำหน้าที่เป็นตัวกลางในการประสานงานระหว่าง <span class="text-cyan-600 font-semibold">ผู้ใช้งาน (User)</span>, <span class="text-cyan-600 font-semibold">โปรแกรมประยุกต์ (Application)</span> และ <span class="text-cyan-600 font-semibold">ฮาร์ดแวร์ (Hardware)</span> ของคอมพิวเตอร์
+                    </p>
+                    <p class="text-slate-700 leading-relaxed">
+                        เป้าหมายหลักคือการทำให้อุปกรณ์ต่าง ๆ ทำงานร่วมกันได้อย่างมีประสิทธิภาพ และอำนวยความสะดวกให้กับผู้ใช้ในการสั่งงานโดยไม่ต้องยุ่งยากกับภาษาระดับต่ำของเครื่องจักร
+                    </p>
+                    <div class="mt-6 p-4 bg-cyan-50 rounded-lg border border-cyan-100">
+                        <p class="text-sm text-cyan-800">
+                            &#9432; <strong>ลองโต้ตอบ:</strong> นำเมาส์ไปชี้ที่ชั้นโครงสร้างด้านขวาเพื่อดูความสัมพันธ์และการส่งต่อข้อมูลระหว่างแต่ละระดับ
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center justify-center p-4">
+                    <div class="w-full max-w-md relative">
+                        <div class="absolute inset-0 bg-cyan-400 opacity-5 blur-xl rounded-full"></div>
+                        <div class="flex flex-col space-y-3 relative z-10 w-full">
+                            
+                            <div class="arch-layer bg-slate-800 text-white p-4 rounded-xl text-center cursor-default shadow-lg border border-slate-700 relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-gradient-to-r from-slate-700 to-slate-800 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <h4 class="relative z-10 font-bold text-lg">&#128100; ผู้ใช้งาน (User)</h4>
+                                <p class="relative z-10 text-xs text-slate-300 mt-1">มนุษย์ผู้สั่งการ</p>
+                            </div>
+
+                            <div class="flex justify-center"><div class="w-1 h-6 bg-cyan-300 rounded"></div></div>
+
+                            <div class="arch-layer glass-panel p-4 rounded-xl text-center cursor-default shadow-lg border border-slate-300 relative group">
+                                <div class="absolute inset-0 bg-white opacity-50 group-hover:opacity-0 transition-opacity rounded-xl"></div>
+                                <h4 class="relative z-10 font-bold text-lg text-slate-800">&#128241; โปรแกรมประยุกต์ (Applications)</h4>
+                                <p class="relative z-10 text-xs text-slate-500 mt-1">เบราว์เซอร์, เกม, โปรแกรมพิมพ์งาน</p>
+                            </div>
+
+                            <div class="flex justify-center"><div class="w-1 h-6 bg-cyan-400 rounded"></div></div>
+
+                            <div class="arch-layer bg-gradient-to-r from-cyan-500 to-blue-500 text-white p-5 rounded-xl text-center cursor-default shadow-xl border border-cyan-300 relative transform scale-105">
+                                <h4 class="relative z-10 font-bold text-xl">&#9881; ระบบปฏิบัติการ (Operating System)</h4>
+                                <p class="relative z-10 text-sm text-cyan-100 mt-1 font-medium">ตัวกลางประสานงานส่วนกลาง</p>
+                            </div>
+
+                            <div class="flex justify-center"><div class="w-1 h-6 bg-cyan-500 rounded"></div></div>
+
+                            <div class="arch-layer bg-slate-200 p-4 rounded-xl text-center cursor-default shadow-inner border border-slate-400 relative group">
+                                <h4 class="relative z-10 font-bold text-lg text-slate-700">&#128421; ฮาร์ดแวร์ (Hardware)</h4>
+                                <p class="relative z-10 text-xs text-slate-500 mt-1">CPU, RAM, HDD, เมาส์, คีย์บอร์ด</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-history" class="hidden fade-in">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">ไทม์ไลน์วิวัฒนาการระบบปฏิบัติการ</h2>
+                <p class="text-lg text-slate-600">วิวัฒนาการของ OS ควบคู่มากับเทคโนโลยีฮาร์ดแวร์ที่เล็กลงและทรงพลังขึ้น</p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-2xl neo-border mb-8">
+                <div class="relative flex justify-between items-center mb-12">
+                    <div class="absolute left-0 right-0 h-1 bg-slate-200 top-1/2 transform -translate-y-1/2 z-0"></div>
+                    <div class="absolute left-0 h-1 bg-cyan-500 top-1/2 transform -translate-y-1/2 z-0 transition-all duration-500" id="timeline-progress" style="width: 0%;"></div>
+                    
+                    <button onclick="showEra(0)" class="timeline-node w-10 h-10 rounded-full bg-slate-300 z-10 relative flex items-center justify-center text-white font-bold transition-all active" id="node-0">1</button>
+                    <button onclick="showEra(1)" class="timeline-node w-10 h-10 rounded-full bg-slate-300 z-10 relative flex items-center justify-center text-white font-bold transition-all" id="node-1">2</button>
+                    <button onclick="showEra(2)" class="timeline-node w-10 h-10 rounded-full bg-slate-300 z-10 relative flex items-center justify-center text-white font-bold transition-all" id="node-2">3</button>
+                    <button onclick="showEra(3)" class="timeline-node w-10 h-10 rounded-full bg-slate-300 z-10 relative flex items-center justify-center text-white font-bold transition-all" id="node-3">4</button>
+                </div>
+
+                <div class="min-h-[250px] bg-white rounded-xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                    <h3 class="text-cyan-600 font-bold text-sm tracking-wider mb-1" id="era-years">ช่วงทศวรรษ 1940 - 1950</h3>
+                    <h4 class="text-2xl font-bold text-slate-800 mb-4" id="era-title">ยุคที่ 1: ยุคไร้ระบบปฏิบัติการ</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-semibold text-slate-700 mb-2 flex items-center gap-2"><span class="text-cyan-500">&#9656;</span> ลักษณะการทำงาน</h5>
+                            <p class="text-slate-600 text-sm leading-relaxed" id="era-desc">คอมพิวเตอร์ยุคแรก (เช่น ENIAC) มีขนาดใหญ่มากและไม่มีระบบปฏิบัติการ ผู้ใช้งานต้องควบคุมฮาร์ดแวร์โดยตรงผ่านการเสียบสายไฟ (Plugboards) หรือใช้บัตรเจาะรู (Punch Cards)</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h5 class="font-semibold text-slate-700 mb-2 flex items-center gap-2"><span class="text-red-400">&#9888;</span> ปัญหา / จุดเด่น</h5>
+                            <p class="text-slate-600 text-sm leading-relaxed" id="era-prob">ทำงานได้ทีละงาน (Single-user) การตั้งค่าระบบใช้เวลานานมาก และหากเกิดข้อผิดพลาดเพียงเล็กน้อยก็ต้องเริ่มกระบวนการใหม่ทั้งหมด</p>
+                            <p class="text-cyan-700 text-sm font-semibold mt-3 hidden" id="era-sys">ระบบสำคัญ: <span class="font-normal text-slate-600" id="era-sys-text"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-functions" class="hidden fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">ศูนย์ควบคุมหน้าที่ 5 ประการ</h2>
+                <p class="text-lg text-slate-600">OS ทำหน้าที่เป็น "ผู้จัดการส่วนกลาง" เลือกโมดูลด้านล่างเพื่อดูจำลองการทำงานแต่ละส่วน</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="lg:col-span-1 space-y-3 pr-2 h-[60vh] overflow-y-auto hide-scroll pb-4">
+                    <button onclick="activateFunc(0)" id="func-btn-0" class="w-full text-left p-4 rounded-xl glass-panel neo-border transition-all border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)] bg-cyan-50/50">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2"><span class="text-2xl">&#9881;</span> 1. ประมวลผล</h4>
+                        <p class="text-xs text-slate-500 mt-1">Processor / Process Management</p>
+                    </button>
+                    <button onclick="activateFunc(1)" id="func-btn-1" class="w-full text-left p-4 rounded-xl glass-panel neo-border transition-all opacity-70 hover:opacity-100">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2"><span class="text-2xl">&#128422;</span> 2. หน่วยความจำ</h4>
+                        <p class="text-xs text-slate-500 mt-1">Memory Management</p>
+                    </button>
+                    <button onclick="activateFunc(2)" id="func-btn-2" class="w-full text-left p-4 rounded-xl glass-panel neo-border transition-all opacity-70 hover:opacity-100">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2"><span class="text-2xl">&#128194;</span> 3. ไฟล์และข้อมูล</h4>
+                        <p class="text-xs text-slate-500 mt-1">File and Storage Management</p>
+                    </button>
+                    <button onclick="activateFunc(3)" id="func-btn-3" class="w-full text-left p-4 rounded-xl glass-panel neo-border transition-all opacity-70 hover:opacity-100">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2"><span class="text-2xl">&#128424;</span> 4. อุปกรณ์ I/O</h4>
+                        <p class="text-xs text-slate-500 mt-1">Device Management</p>
+                    </button>
+                    <button onclick="activateFunc(4)" id="func-btn-4" class="w-full text-left p-4 rounded-xl glass-panel neo-border transition-all opacity-70 hover:opacity-100">
+                        <h4 class="font-bold text-slate-800 text-lg flex items-center gap-2"><span class="text-2xl">&#128187;</span> 5. อินเตอร์เฟสผู้ใช้</h4>
+                        <p class="text-xs text-slate-500 mt-1">User Interface (UI)</p>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-2 glass-panel p-6 rounded-2xl neo-border flex flex-col">
+                    <div id="func-content-0" class="func-detail h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">การจัดการหน่วยประมวลผล (CPU)</h3>
+                        <p class="text-slate-600 mb-4">จัดสรรเวลาการทำงานของ CPU ให้กับโปรแกรมที่กำลังรัน กำหนดลำดับความสำคัญ (Scheduling) เพื่อให้ทำงานพร้อมกันโดยไม่สะดุด</p>
+                        <div class="chart-container flex-grow mt-4 bg-white p-4 rounded-xl border border-slate-100">
+                            <canvas id="cpuChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="func-content-1" class="func-detail hidden h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">การจัดการหน่วยความจำ (RAM)</h3>
+                        <p class="text-slate-600 mb-6">ควบคุมพื้นที่ RAM จัดสรรให้โปรแกรมเมื่อเริ่มทำงาน ดึงคืนเมื่อปิดตัว และจัดการหน่วยความจำเสมือน (Virtual Memory)</p>
+                        
+                        <div class="bg-slate-100 p-6 rounded-xl flex-grow flex flex-col justify-center items-center">
+                            <div class="w-full max-w-md">
+                                <div class="flex justify-between text-sm font-bold text-slate-600 mb-2">
+                                    <span>RAM Usage</span>
+                                    <span id="ram-text" class="text-cyan-600">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-300 rounded-full h-6 overflow-hidden border border-slate-400">
+                                    <div id="ram-bar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-6 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                                </div>
+                                <div class="mt-8 flex justify-center gap-4">
+                                    <button onclick="simRam(30)" class="px-4 py-2 bg-white rounded shadow text-sm font-semibold text-slate-700 hover:bg-slate-50">เปิด Web Browser</button>
+                                    <button onclick="simRam(65)" class="px-4 py-2 bg-white rounded shadow text-sm font-semibold text-slate-700 hover:bg-slate-50">เล่นเกม 3D</button>
+                                    <button onclick="simRam(5)" class="px-4 py-2 bg-white rounded shadow text-sm font-semibold text-red-500 hover:bg-slate-50">ปิดโปรแกรมทั้งหมด</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="func-content-2" class="func-detail hidden h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">การจัดการไฟล์และข้อมูล</h3>
+                        <p class="text-slate-600 mb-4">ดูแลการจัดเก็บข้อมูลใน HDD/SSD กำหนดโครงสร้างไฟล์ โฟลเดอร์ สิทธิ์การเข้าถึง อ่าน เขียน ลบ</p>
+                        <div class="bg-white rounded-xl border border-slate-200 p-4 flex-grow font-mono text-sm shadow-inner overflow-y-auto">
+                            <ul class="space-y-2 text-slate-700">
+                                <li class="flex items-center gap-2 font-bold cursor-pointer hover:text-cyan-600"><span class="text-xl">&#128193;</span> Root (C:)</li>
+                                <ul class="pl-6 space-y-2 mt-2 border-l-2 border-slate-100 ml-2">
+                                    <li class="flex items-center gap-2 cursor-pointer hover:text-cyan-600"><span class="text-xl">&#128193;</span> Windows</li>
+                                    <li class="flex items-center gap-2 cursor-pointer hover:text-cyan-600"><span class="text-xl">&#128193;</span> Program Files</li>
+                                    <li class="flex items-center gap-2 cursor-pointer hover:text-cyan-600"><span class="text-xl">&#128194;</span> Users</li>
+                                    <ul class="pl-6 space-y-2 mt-2 border-l-2 border-slate-100 ml-2">
+                                        <li class="flex items-center gap-2 cursor-pointer hover:text-cyan-600"><span class="text-xl">&#128193;</span> Admin</li>
+                                        <li class="flex items-center gap-2 text-slate-500 hover:text-cyan-600"><span class="text-xl">&#128196;</span> document.pdf (Read-only)</li>
+                                        <li class="flex items-center gap-2 text-slate-500 hover:text-cyan-600"><span class="text-xl">&#128247;</span> image.png</li>
+                                    </ul>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="func-content-3" class="func-detail hidden h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">การจัดการอุปกรณ์ I/O</h3>
+                        <p class="text-slate-600 mb-4">ควบคุมอุปกรณ์ต่อพ่วงผ่านโปรแกรมเฉพาะที่เรียกว่าไดรเวอร์ (Driver) เพื่อให้สื่อสารกับระบบได้</p>
+                        <div class="grid grid-cols-2 gap-4 flex-grow content-center">
+                            <div class="p-6 bg-white rounded-xl text-center border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer group">
+                                <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">&#9000;</div>
+                                <h4 class="font-bold text-slate-700">Keyboard</h4>
+                                <div class="mt-2 text-xs text-green-500 bg-green-50 py-1 rounded inline-block px-2">Driver Loaded</div>
+                            </div>
+                            <div class="p-6 bg-white rounded-xl text-center border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer group">
+                                <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">&#128433;</div>
+                                <h4 class="font-bold text-slate-700">Mouse</h4>
+                                <div class="mt-2 text-xs text-green-500 bg-green-50 py-1 rounded inline-block px-2">Driver Loaded</div>
+                            </div>
+                            <div class="p-6 bg-white rounded-xl text-center border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer group">
+                                <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">&#128424;</div>
+                                <h4 class="font-bold text-slate-700">Printer</h4>
+                                <div class="mt-2 text-xs text-amber-500 bg-amber-50 py-1 rounded inline-block px-2">Standby</div>
+                            </div>
+                            <div class="p-6 bg-white rounded-xl text-center border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer group">
+                                <div class="text-4xl mb-2 group-hover:scale-110 transition-transform">&#128421;</div>
+                                <h4 class="font-bold text-slate-700">Monitor</h4>
+                                <div class="mt-2 text-xs text-green-500 bg-green-50 py-1 rounded inline-block px-2">Active (60Hz)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="func-content-4" class="func-detail hidden h-full flex flex-col">
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">การจัดหาอินเตอร์เฟส (UI)</h3>
+                        <p class="text-slate-600 mb-4">ส่วนที่เชื่อมต่อกับผู้ใช้โดยตรง เพื่อรับคำสั่งไปประมวลผล</p>
+                        
+                        <div class="flex justify-center mb-4">
+                            <div class="bg-slate-200 p-1 rounded-lg inline-flex">
+                                <button onclick="toggleUI('cli')" id="btn-cli" class="px-4 py-1 text-sm font-bold rounded bg-white shadow text-slate-800">CLI (Command Line)</button>
+                                <button onclick="toggleUI('gui')" id="btn-gui" class="px-4 py-1 text-sm font-bold rounded text-slate-500 hover:text-slate-800">GUI (Graphical)</button>
+                            </div>
+                        </div>
+
+                        <div class="flex-grow bg-slate-900 rounded-xl p-4 overflow-hidden relative" id="ui-display">
+                            
+                            <div id="ui-cli" class="terminal-text text-sm h-full flex flex-col">
+                                <div>OS_Nexus_Kernel v4.0.2</div>
+                                <div>Loading system drivers... [OK]</div>
+                                <div>Mounting root filesystem... [OK]</div>
+                                <div>Starting user session...</div>
+                                <br>
+                                <div>root@nexus:~# <span class="blinking-cursor">_</span></div>
+                            </div>
+
+                            
+                            <div id="ui-gui" class="hidden absolute inset-0 bg-slate-100 p-4">
+                                <div class="h-full bg-white rounded-lg shadow-md border border-slate-300 flex flex-col overflow-hidden">
+                                    <div class="bg-slate-200 p-2 flex items-center justify-between border-b border-slate-300">
+                                        <div class="text-xs font-bold text-slate-600 pl-2">System Explorer</div>
+                                        <div class="flex gap-2 pr-2">
+                                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 grid grid-cols-4 gap-4">
+                                        <div class="flex flex-col items-center gap-1 cursor-pointer hover:bg-slate-50 p-2 rounded">
+                                            <div class="text-3xl text-cyan-500">&#128193;</div>
+                                            <div class="text-xs text-slate-700">Documents</div>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1 cursor-pointer hover:bg-slate-50 p-2 rounded">
+                                            <div class="text-3xl text-cyan-500">&#128193;</div>
+                                            <div class="text-xs text-slate-700">Downloads</div>
+                                        </div>
+                                        <div class="flex flex-col items-center gap-1 cursor-pointer hover:bg-slate-50 p-2 rounded">
+                                            <div class="text-3xl text-slate-400">&#9881;</div>
+                                            <div class="text-xs text-slate-700">Settings</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-types" class="hidden fade-in">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">ฐานข้อมูลประเภทระบบปฏิบัติการ</h2>
+                <p class="text-lg text-slate-600">จำแนกตามวัตถุประสงค์และการใช้งานทั่วไปในเทคโนโลยีปัจจุบัน</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="glass-panel p-6 rounded-2xl neo-border flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-center">สัดส่วนการจำแนกประเภท (แนวคิด)</h3>
+                    <div class="chart-container">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-slate-500 mt-4">แผนภูมิแสดงความหลากหลายของระบบปฏิบัติการที่แฝงอยู่ในชีวิตประจำวัน</p>
+                </div>
+
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-cyan-300 transition-all cursor-default">
+                        <div class="text-3xl mb-2">&#128421;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">Desktop OS</h4>
+                        <p class="text-xs text-slate-500 mb-2">สำหรับคอมพิวเตอร์ทั่วไป</p>
+                        <p class="text-sm text-slate-600 mb-3">เน้น GUI ที่สวยงาม รองรับ Multitasking และอุปกรณ์ต่อพ่วงหลากหลาย</p>
+                        <div class="text-xs font-semibold text-cyan-700 bg-cyan-50 p-2 rounded">Windows, macOS, Linux</div>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-cyan-300 transition-all cursor-default">
+                        <div class="text-3xl mb-2">&#128241;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">Mobile OS</h4>
+                        <p class="text-xs text-slate-500 mb-2">สำหรับอุปกรณ์พกพา</p>
+                        <p class="text-sm text-slate-600 mb-3">เน้นสั่งงานด้วยระบบสัมผัส ประหยัดพลังงาน และรองรับการเชื่อมต่อไร้สาย</p>
+                        <div class="text-xs font-semibold text-cyan-700 bg-cyan-50 p-2 rounded">Android, iOS, iPadOS</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-cyan-300 transition-all cursor-default">
+                        <div class="text-3xl mb-2">&#128439;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">Server OS</h4>
+                        <p class="text-xs text-slate-500 mb-2">สำหรับเครื่องแม่ข่าย</p>
+                        <p class="text-sm text-slate-600 mb-3">เน้นความเสถียร ความปลอดภัยสูง รองรับผู้ใช้จำนวนมาก และจัดการฐานข้อมูล</p>
+                        <div class="text-xs font-semibold text-cyan-700 bg-cyan-50 p-2 rounded">Windows Server, Red Hat, Debian</div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-cyan-300 transition-all cursor-default">
+                        <div class="text-3xl mb-2">&#9881;</div>
+                        <h4 class="font-bold text-slate-800 text-lg">Embedded OS</h4>
+                        <p class="text-xs text-slate-500 mb-2">สำหรับระบบฝังตัว</p>
+                        <p class="text-sm text-slate-600 mb-3">OS ขนาดเล็กฝังในอุปกรณ์เฉพาะ เช่น เครื่องจักร, สมาร์ตทีวี, ระบบรถยนต์</p>
+                        <div class="text-xs font-semibold text-cyan-700 bg-cyan-50 p-2 rounded">RTOS, Windows IoT, embedded Linux</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 glass-panel p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-3">รูปแบบการทำงานพิเศษเพิ่มเติม</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm border border-slate-200 hover:bg-cyan-50 hover:border-cyan-200 transition-colors cursor-help" title="ผู้ใช้หลายคนใช้งานพร้อมกันได้">Multi-user OS</span>
+                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm border border-slate-200 hover:bg-cyan-50 hover:border-cyan-200 transition-colors cursor-help" title="ทำงานหลายโปรแกรมพร้อมกัน">Multitasking OS</span>
+                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm border border-slate-200 hover:bg-cyan-50 hover:border-cyan-200 transition-colors cursor-help" title="คอมพิวเตอร์หลายเครื่องทำงานร่วมกันผ่านเครือข่าย">Distributed OS</span>
+                    <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm border border-slate-200 hover:bg-cyan-50 hover:border-cyan-200 transition-colors cursor-help" title="ตอบสนองแบบเรียลไทม์ แม่นยำสูงสุด (เช่น ระบบการบิน)">Real-Time OS (RTOS)</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <p>OS Nexus Terminal - สรุปข้อมูลความรู้เบื้องต้นเกี่ยวกับระบบปฏิบัติการ</p>
+            <p class="mt-1 opacity-60">ระบบปฏิบัติการคือซอฟต์แวร์พื้นฐานที่สำคัญที่สุด การเลือกใช้ให้เหมาะสมคือหัวใจของการจัดการ IT</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = ['overview', 'history', 'functions', 'types'];
+
+        function nav(target) {
+            sections.forEach(sec => {
+                document.getElementById(`sec-${sec}`).classList.add('hidden');
+                const btn = document.getElementById(`btn-${sec}`);
+                if(btn) {
+                    btn.classList.remove('active', 'text-white', 'border-transparent');
+                    btn.classList.add('text-slate-600', 'border-slate-300');
+                }
+            });
+            
+            document.getElementById(`sec-${target}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${target}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-600', 'border-slate-300');
+                activeBtn.classList.add('active', 'text-white', 'border-transparent');
+            }
+
+            if(target === 'functions' && !cpuChartInstance) {
+                initCpuChart();
+            }
+            if(target === 'types' && !typeChartInstance) {
+                initTypeChart();
+            }
+        }
+
+        const historyData = [
+            {
+                years: "ช่วงทศวรรษ 1940 - 1950",
+                title: "ยุคที่ 1: ยุคไร้ระบบปฏิบัติการ",
+                desc: "คอมพิวเตอร์ยุคแรก (เช่น ENIAC) มีขนาดใหญ่มากและไม่มีระบบปฏิบัติการ ผู้ใช้งานมักเป็นนักวิทยาศาสตร์ ต้องควบคุมฮาร์ดแวร์โดยตรงผ่านการเสียบสายไฟ (Plugboards) หรือใช้บัตรเจาะรู (Punch Cards)",
+                prob: "ทำงานได้ทีละงาน (Single-user) การตั้งค่าระบบใช้เวลานานมาก และหากเกิดข้อผิดพลาดเพียงเล็กน้อยก็ต้องเริ่มกระบวนการใหม่ทั้งหมด",
+                sys: null
+            },
+            {
+                years: "ช่วงทศวรรษ 1950 - 1960",
+                title: "ยุคที่ 2: ยุคการประมวลผลแบบกลุ่ม",
+                desc: "เริ่มมีการพัฒนาซอฟต์แวร์ควบคุมที่เรียกว่า 'Resident Monitor' โดยใช้วิธีรวบรวมงานที่มีลักษณะคล้ายกันไว้เป็นกลุ่ม เรียกว่า 'Batch Processing System' แล้วส่งให้คอมพิวเตอร์ทำงานต่อเนื่องกันไป",
+                prob: "ลดเวลาในการตั้งค่าระบบได้ แต่ผู้ใช้ไม่สามารถโต้ตอบกับโปรแกรมขณะทำงานได้",
+                sys: "FMS (Fortran Monitor System) และ IBSYS ของ IBM"
+            },
+            {
+                years: "ช่วงทศวรรษ 1960 - 1980",
+                title: "ยุคที่ 3: หลายโปรแกรมและแบ่งเวลา",
+                desc: "ยุคปฏิวัติวงการ เกิด Multiprogramming (โหลดหลายโปรแกรมลง RAM เพื่อสลับการใช้ CPU) และ Time-sharing (อนุญาตให้ผู้ใช้หลายคนใช้งานเครื่องเดียวกันได้พร้อมกันผ่านเทอร์มินัล)",
+                prob: "ทำให้ CPU ทำงานได้อย่างคุ้มค่าตลอดเวลา และผู้ใช้รู้สึกเหมือนใช้เครื่องคนเดียว",
+                sys: "OS/360 ของ IBM และ Unix (รากฐาน OS ยุคปัจจุบัน)"
+            },
+            {
+                years: "ช่วงทศวรรษ 1980 - ปัจจุบัน",
+                title: "ยุคที่ 4: PC และเครือข่าย",
+                desc: "ฮาร์ดแวร์ถูกและเล็กลง เกิดไมโครคอมพิวเตอร์ เน้นความง่ายในการใช้งาน พัฒนาอินเตอร์เฟสแบบกราฟิก (GUI) แทนการพิมพ์คำสั่ง (CLI) และเข้าสู่ยุค Mobile และ Cloud",
+                prob: "เข้าถึงบุคคลทั่วไปได้ง่าย เชื่อมต่อกันทั่วโลก อุปกรณ์พกพามี OS ของตัวเอง",
+                sys: "MS-DOS, Windows, macOS, Linux, Android, iOS"
+            }
+        ];
+
+        function showEra(index) {
+            for(let i=0; i<4; i++) {
+                document.getElementById(`node-${i}`).classList.remove('active', 'scale-125');
+                document.getElementById(`node-${i}`).classList.add('bg-slate-300');
+            }
+            const activeNode = document.getElementById(`node-${index}`);
+            activeNode.classList.remove('bg-slate-300');
+            activeNode.classList.add('active', 'scale-125');
+
+            document.getElementById('timeline-progress').style.width = (index * 33.33) + '%';
+
+            const data = historyData[index];
+            document.getElementById('era-years').innerText = data.years;
+            document.getElementById('era-title').innerText = data.title;
+            document.getElementById('era-desc').innerText = data.desc;
+            document.getElementById('era-prob').innerText = data.prob;
+            
+            const sysEl = document.getElementById('era-sys');
+            if(data.sys) {
+                sysEl.classList.remove('hidden');
+                document.getElementById('era-sys-text').innerText = data.sys;
+            } else {
+                sysEl.classList.add('hidden');
+            }
+        }
+
+        function activateFunc(index) {
+            for(let i=0; i<5; i++) {
+                const btn = document.getElementById(`func-btn-${i}`);
+                btn.classList.remove('border-cyan-400', 'shadow-[0_0_10px_rgba(6,182,212,0.2)]', 'bg-cyan-50/50');
+                btn.classList.add('opacity-70');
+                
+                document.getElementById(`func-content-${i}`).classList.add('hidden');
+            }
+            
+            const activeBtn = document.getElementById(`func-btn-${index}`);
+            activeBtn.classList.remove('opacity-70');
+            activeBtn.classList.add('border-cyan-400', 'shadow-[0_0_10px_rgba(6,182,212,0.2)]', 'bg-cyan-50/50');
+            
+            document.getElementById(`func-content-${index}`).classList.remove('hidden');
+        }
+
+        let cpuChartInstance = null;
+        let cpuInterval = null;
+
+        function initCpuChart() {
+            const ctx = document.getElementById('cpuChart').getContext('2d');
+            
+            const initData = {
+                labels: ['-10s', '-8s', '-6s', '-4s', '-2s', 'Now'],
+                datasets: [
+                    {
+                        label: 'System Process',
+                        data: [20, 25, 22, 30, 28, 25],
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'User Application',
+                        data: [10, 40, 35, 60, 45, 55],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            };
+
+            cpuChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: initData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'CPU Load (%)' } },
+                        x: { grid: { display: false } }
+                    },
+                    animation: { duration: 400 }
+                }
+            });
+
+            if(cpuInterval) clearInterval(cpuInterval);
+            cpuInterval = setInterval(() => {
+                if(document.getElementById('sec-functions').classList.contains('hidden') || document.getElementById('func-content-0').classList.contains('hidden')) return;
+                
+                const sysNew = Math.floor(Math.random() * 20) + 15;
+                const usrNew = Math.floor(Math.random() * 50) + 20;
+
+                cpuChartInstance.data.datasets[0].data.shift();
+                cpuChartInstance.data.datasets[0].data.push(sysNew);
+                
+                cpuChartInstance.data.datasets[1].data.shift();
+                cpuChartInstance.data.datasets[1].data.push(usrNew);
+                
+                cpuChartInstance.update('none');
+            }, 2000);
+        }
+
+        function simRam(val) {
+            document.getElementById('ram-bar').style.width = val + '%';
+            document.getElementById('ram-text').innerText = val + '%';
+            if(val > 80) {
+                document.getElementById('ram-bar').className = "bg-gradient-to-r from-amber-400 to-red-500 h-6 rounded-full transition-all duration-1000 ease-out";
+                document.getElementById('ram-text').className = "text-red-600";
+            } else {
+                document.getElementById('ram-bar').className = "bg-gradient-to-r from-cyan-400 to-blue-500 h-6 rounded-full transition-all duration-1000 ease-out";
+                document.getElementById('ram-text').className = "text-cyan-600";
+            }
+        }
+
+        function toggleUI(type) {
+            document.getElementById('btn-cli').classList.remove('bg-white', 'shadow', 'text-slate-800', 'text-slate-500');
+            document.getElementById('btn-gui').classList.remove('bg-white', 'shadow', 'text-slate-800', 'text-slate-500');
+            
+            document.getElementById('ui-cli').classList.add('hidden');
+            document.getElementById('ui-gui').classList.add('hidden');
+
+            if(type === 'cli') {
+                document.getElementById('btn-cli').classList.add('bg-white', 'shadow', 'text-slate-800');
+                document.getElementById('btn-gui').classList.add('text-slate-500');
+                document.getElementById('ui-cli').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-gui').classList.add('bg-white', 'shadow', 'text-slate-800');
+                document.getElementById('btn-cli').classList.add('text-slate-500');
+                document.getElementById('ui-gui').classList.remove('hidden');
+            }
+        }
+
+        let typeChartInstance = null;
+        function initTypeChart() {
+            const ctx = document.getElementById('typeChart').getContext('2d');
+            typeChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mobile OS', 'Desktop OS', 'Server OS', 'Embedded OS'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: [
+                            '#06b6d4', 
+                            '#3b82f6', 
+                            '#6366f1', 
+                            '#cbd5e1'  
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ' (แนวคิดสัดส่วน)';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        setTimeout(() => { showEra(0); }, 100);
+
+    </script>
+</body>
+</html>
