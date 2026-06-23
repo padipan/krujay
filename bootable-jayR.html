@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คู่มือการเตรียม Bootable USB และตั้งค่า BIOS/UEFI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* <!-- Chosen Palette: Warm Sand & Tech Blue --> */
+        /* <!-- Application Structure Plan: The SPA is structured as a sequential interactive dashboard (Wizard-style). 
+             It moves from Preparation (Rufus) -> Hardware Config (BIOS) -> Knowledge (Comparison) -> Resolution (Troubleshooting). 
+             This linear-but-explorable structure is chosen because OS installation is a sequential process. Users can follow step-by-step or jump to specific reference tools like the Hotkey Finder. --> */
+        /* <!-- Visualization & Content Choices: 
+             1. Rufus Steps -> Interactive Step-through Card -> Guides user without overwhelming text -> Vanilla JS.
+             2. BIOS Hotkeys -> Interactive Filter/Selector -> Quick lookup based on user's specific hardware -> Vanilla JS.
+             3. UEFI vs Legacy -> Bar Chart (Max Partitions 128 vs 4) -> Visually emphasizes the technological leap -> Chart.js.
+             4. Troubleshooting -> Accordion -> Hides clutter until needed -> HTML/Vanilla JS.
+             Confirming: NO SVG or Mermaid used. --> */
+        /* <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. --> */
+
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #faf8f5; /* Warm neutral background */
+            color: #292524; /* Stone 800 */
+        }
+
+        /* Chart Container Mandatory Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+        .step-transition { transition: all 0.3s ease-in-out; }
+        
+        .brand-btn.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2 font-bold text-xl text-blue-700">
+                    <span class="text-2xl">&#x1F4BB;</span> <span> เรียนรู้กับครูเจอาร์ OS Install Prep</span>
+                </div>
+                <div class="hidden md:flex space-x-6 text-sm font-medium text-stone-600">
+                    <a href="#rufus" class="hover:text-blue-600 transition">1. สร้าง USB (Rufus)</a>
+                    <a href="#bios" class="hover:text-blue-600 transition">2. ตั้งค่า BIOS</a>
+                    <a href="#compare" class="hover:text-blue-600 transition">3. เปรียบเทียบระบบ</a>
+                    <a href="#troubleshoot" class="hover:text-blue-600 transition">4. แก้ปัญหา</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="max-w-6xl mx-auto px-4 py-12 md:py-20 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold text-stone-900 mb-4 leading-tight">
+            เรียนรู้กับครูเจอาร์ คู่มือเตรียมสื่อติดตั้ง <br class="hidden md:block"/><span class="text-blue-600">&amp; ตั้งค่า BIOS/UEFI</span>
+        </h1>
+        <p class="text-lg md:text-xl text-stone-600 max-w-3xl mx-auto">
+            เรียนรู้ขั้นตอนการเตรียม USB Bootable ด้วยโปรแกรม Rufus และการตั้งค่าเมนบอร์ดสำหรับฮาร์ดแวร์ยุคปัจจุบัน เพื่อให้การลงระบบปฏิบัติการใหม่เป็นเรื่องง่ายและสมบูรณ์แบบ
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pb-20 space-y-24">
+
+        <!-- Section 1: Rufus -->
+        <section id="rufus" class="scroll-mt-20">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10">
+                <div class="mb-8 border-b border-stone-100 pb-6">
+                    <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                        <span class="text-3xl">&#x1F4BE;</span> ส่วนที่ 1: การเตรียม USB ด้วย Rufus
+                    </h2>
+                    <p class="mt-3 text-stone-600">
+                        การสร้าง USB Bootable คือก้าวแรกที่สำคัญ ส่วนนี้จะจำลองขั้นตอนการใช้งานโปรแกรม Rufus แบบเป็นลำดับขั้น 
+                        เรียนรู้ว่าแต่ละจุดต้องตั้งค่าอย่างไร (เช่น GPT vs MBR) พร้อมอธิบายสิ่งที่ต้องเตรียมก่อนเริ่มงาน 
+                        ให้คุณทำตามได้ทีละก้าวอย่างมั่นใจ
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Requirements -->
+                    <div class="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                        <h3 class="text-lg font-bold mb-4 border-b border-stone-200 pb-2">สิ่งที่ต้องเตรียม</h3>
+                        <ul class="space-y-4">
+                            <li class="flex gap-3 items-start">
+                                <span class="text-xl">&#x1F525;</span>
+                                <div>
+                                    <span class="font-semibold block">USB Flash Drive</span>
+                                    <span class="text-sm text-stone-500">ความจุขั้นต่ำ 8 GB (ข้อมูลจะถูกลบทั้งหมด)</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="text-xl">&#x1F4C0;</span>
+                                <div>
+                                    <span class="font-semibold block">ไฟล์ ISO</span>
+                                    <span class="text-sm text-stone-500">เช่น Windows 10/11 จากเว็บ Microsoft</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="text-xl">&#x1F6E0;</span>
+                                <div>
+                                    <span class="font-semibold block">โปรแกรม Rufus</span>
+                                    <span class="text-sm text-stone-500">ดาวน์โหลดเวอร์ชันล่าสุดฟรี</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Interactive Steps -->
+                    <div class="md:col-span-2 flex flex-col justify-center">
+                        <div class="relative bg-white rounded-xl border-2 border-blue-100 p-6 shadow-sm overflow-hidden min-h-[250px] flex flex-col justify-between" id="rufus-card">
+                            <div>
+                                <div class="flex justify-between items-center mb-4 text-sm font-semibold text-blue-600 tracking-wider uppercase">
+                                    <span id="step-counter">ขั้นตอนที่ 1 / 9</span>
+                                </div>
+                                <h4 class="text-xl font-bold text-stone-800 mb-2" id="step-title">เปิดโปรแกรม</h4>
+                                <p class="text-stone-600" id="step-desc">เสียบ USB Flash Drive เข้ากับคอมพิวเตอร์ แล้วเปิดโปรแกรม Rufus</p>
+                                
+                                <div id="step-extra" class="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg text-sm hidden border border-yellow-200">
+                                    <!-- Contextual highlights go here -->
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center mt-8 pt-4 border-t border-stone-100">
+                                <button onclick="prevStep()" class="px-4 py-2 text-stone-500 hover:text-stone-800 disabled:opacity-30 disabled:cursor-not-allowed font-medium" id="btn-prev" disabled>&#x2190; ย้อนกลับ</button>
+                                
+                                <!-- Progress indicators -->
+                                <div class="flex gap-1" id="step-dots">
+                                    <!-- Dots generated by JS -->
+                                </div>
+
+                                <button onclick="nextStep()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium" id="btn-next">ถัดไป &#x2192;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: BIOS -->
+        <section id="bios" class="scroll-mt-20">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10">
+                <div class="mb-8 border-b border-stone-100 pb-6">
+                    <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                        <span class="text-3xl">&#x2699;</span> ส่วนที่ 2: ตั้งค่า BIOS/UEFI และการบูต
+                    </h2>
+                    <p class="mt-3 text-stone-600">
+                        หลังจากได้ USB แล้ว คุณต้องสั่งให้คอมพิวเตอร์บูตจาก USB แทนฮาร์ดดิสก์เดิม 
+                        ส่วนนี้ออกแบบมาให้คุณค้นหาปุ่มลัด (Hotkey) ของคอมพิวเตอร์แต่ละแบรนด์ได้อย่างรวดเร็ว 
+                        และตรวจสอบรายการตั้งค่าบังคับ (Checklist) ใน BIOS สำหรับฮาร์ดแวร์ยุคใหม่ (โดยเฉพาะการรองรับ Windows 11)
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-10">
+                    <!-- Hotkey Finder -->
+                    <div class="bg-stone-50 rounded-xl p-6 border border-stone-200">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span class="text-xl">&#x1F50D;</span> ค้นหาปุ่มเข้า BIOS / Boot Menu
+                        </h3>
+                        <p class="text-sm text-stone-500 mb-4">กดปุ่มที่ระบุรัวๆ ทันทีที่เปิดเครื่องก่อนโลโก้ Windows จะขึ้น</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6" id="brand-buttons">
+                            <!-- Buttons generated by JS -->
+                        </div>
+
+                        <div class="bg-white border border-stone-200 rounded-lg p-5 text-center shadow-inner" id="hotkey-result">
+                            <p class="text-stone-400 italic">เลือกยี่ห้อเมนบอร์ดหรือโน้ตบุ๊กของคุณด้านบน</p>
+                        </div>
+                    </div>
+
+                    <!-- BIOS Checklist -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span class="text-xl">&#x2705;</span> รายการตั้งค่าสำคัญ (Advanced Mode)
+                        </h3>
+                        <div class="space-y-4">
+                            <!-- Item 1 -->
+                            <div class="bg-white border border-stone-200 rounded-xl p-4 hover:border-blue-300 transition group cursor-default">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-stone-800">A. โหมด SATA เป็น AHCI</h4>
+                                    <span class="text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded">จำเป็น</span>
+                                </div>
+                                <p class="text-sm text-stone-600">ช่วยให้ SSD/HDD ทำงานเต็มประสิทธิภาพ (ข้ามได้ถ้าใช้ NVMe M.2 อย่างเดียว)</p>
+                                <div class="mt-3 p-2 bg-stone-50 rounded text-sm text-stone-700 border border-stone-100">
+                                    <span class="font-mono text-xs bg-stone-200 px-1 rounded">เมนู</span> Storage Configuration ➔ เปลี่ยนเป็น <b>AHCI</b>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="bg-white border border-stone-200 rounded-xl p-4 hover:border-blue-300 transition group cursor-default">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-stone-800">B. เปิด UEFI / ปิด CSM</h4>
+                                    <span class="text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded">จำเป็น</span>
+                                </div>
+                                <p class="text-sm text-stone-600">ระบบมาตรฐานใหม่ บูตเร็ว รองรับดิสก์เกิน 2TB และจำเป็นสำหรับ Win11</p>
+                                <div class="mt-3 p-2 bg-stone-50 rounded text-sm text-stone-700 border border-stone-100">
+                                    <span class="font-mono text-xs bg-stone-200 px-1 rounded">เมนู</span> Boot ➔ CSM/Legacy Boot ➔ <b>Disabled</b>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="bg-white border border-stone-200 rounded-xl p-4 hover:border-blue-300 transition group cursor-default">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-stone-800">C. ความปลอดภัย (Win11)</h4>
+                                    <span class="text-xs font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded">Windows 11</span>
+                                </div>
+                                <div class="mt-3 p-2 bg-stone-50 rounded text-sm text-stone-700 border border-stone-100 space-y-2">
+                                    <div><span class="font-mono text-xs bg-stone-200 px-1 rounded">Security</span> Secure Boot ➔ <b>Enabled</b></div>
+                                    <div><span class="font-mono text-xs bg-stone-200 px-1 rounded">Intel</span> PTT ➔ <b>Enabled</b></div>
+                                    <div><span class="font-mono text-xs bg-stone-200 px-1 rounded">AMD</span> fTPM ➔ <b>Enabled</b></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Comparison -->
+        <section id="compare" class="scroll-mt-20">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10">
+                <div class="mb-8 border-b border-stone-100 pb-6">
+                    <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                        <span class="text-3xl">&#x1F4CA;</span> ส่วนที่ 3: เปรียบเทียบ UEFI vs Legacy BIOS
+                    </h2>
+                    <p class="mt-3 text-stone-600">
+                        ทำไมเราถึงต้องตั้งค่าฮาร์ดแวร์ยุคใหม่ให้เป็น UEFI (GPT)? ส่วนนี้แสดงการเปรียบเทียบข้อมูลเชิงปริมาณ 
+                        เพื่อให้เห็นความแตกต่างอย่างชัดเจนถึงขีดจำกัดของระบบเดิมเมื่อเทียบกับระบบใหม่ โดยเฉพาะเรื่องจำนวนพาร์ทิชันที่รองรับ
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-stone-50 border-b border-stone-200">
+                                    <tr>
+                                        <th class="p-4 font-bold text-stone-700">หัวข้อ</th>
+                                        <th class="p-4 font-bold text-blue-700 bg-blue-50/50">UEFI (ปัจจุบัน)</th>
+                                        <th class="p-4 font-bold text-stone-500">Legacy BIOS (เดิม)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-stone-100">
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-4 font-semibold text-stone-800">รูปแบบ Partition</td>
+                                        <td class="p-4 font-bold text-blue-600 bg-blue-50/30">GPT</td>
+                                        <td class="p-4 text-stone-600">MBR</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-4 font-semibold text-stone-800">ความจุไดรฟ์สูงสุด</td>
+                                        <td class="p-4 bg-blue-50/30">9.4 ZB (มหาศาล)</td>
+                                        <td class="p-4 text-stone-600">2 TB</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-4 font-semibold text-stone-800">จำนวน Partition ย่อย</td>
+                                        <td class="p-4 bg-blue-50/30">128 พาร์ทิชัน</td>
+                                        <td class="p-4 text-stone-600">4 พาร์ทิชันหลัก</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-4 font-semibold text-stone-800">ความเร็วการบูต</td>
+                                        <td class="p-4 bg-blue-50/30">รวดเร็ว (Fast Boot)</td>
+                                        <td class="p-4 text-stone-600">ช้ากว่า</td>
+                                    </tr>
+                                    <tr class="hover:bg-stone-50">
+                                        <td class="p-4 font-semibold text-stone-800">รองรับระบบปฏิบัติการ</td>
+                                        <td class="p-4 bg-blue-50/30">64-bit ปัจจุบัน/อนาคต</td>
+                                        <td class="p-4 text-stone-600">ระบบเก่า (รวม 32-bit)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                        <h4 class="text-center font-bold text-stone-700 mb-2">เปรียบเทียบการรองรับ Partition (GPT vs MBR)</h4>
+                        <p class="text-center text-xs text-stone-500 mb-6">ความยืดหยุ่นในการแบ่งไดรฟ์ของระบบปฏิบัติการ</p>
+                        <!-- Chart Container Mandatory Implementation -->
+                        <div class="chart-container">
+                            <canvas id="partitionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Troubleshooting -->
+        <section id="troubleshoot" class="scroll-mt-20">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-6 md:p-10">
+                <div class="mb-8 border-b border-stone-100 pb-6">
+                    <h2 class="text-2xl font-bold text-stone-800 flex items-center gap-3">
+                        <span class="text-3xl">&#x1F6A8;</span> ส่วนที่ 4: การแก้ไขปัญหาและเคล็ดลับ
+                    </h2>
+                    <p class="mt-3 text-stone-600">
+                        รวบรวมปัญหาที่พบบ่อยระหว่างกระบวนการติดตั้งและวิธีแก้ไขที่ตรงจุด รวมถึงเคล็ดลับเพิ่มเติมในการจัดการดิสก์ 
+                        เลือกเปิดดูหัวข้อที่ตรงกับปัญหาที่คุณกำลังพบ
+                    </p>
+                </div>
+
+                <div class="space-y-4" id="faq-container">
+                    <!-- Generated by JS -->
+                </div>
+                
+                <!-- Bonus Tip -->
+                <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+                    <h3 class="font-bold text-blue-800 flex items-center gap-2 mb-2">
+                        <span class="text-xl">&#x1F4A1;</span> ข้อแนะนำเพิ่มเติมเมื่อบูตเข้า USB สำเร็จแล้ว
+                    </h3>
+                    <p class="text-sm text-blue-900 leading-relaxed">
+                        ในหน้าแบ่งพาร์ทิชัน (Where do you want to install Windows?) หากต้องการใช้ระบบ UEFI แบบสะอาดหมดจด 
+                        ควรสำรองข้อมูลเดิมออกไปทั้งหมดก่อน จากนั้นเลือกลบพาร์ทิชันเก่าทั้งหมดด้วยการกด <b>Delete</b> จนเหลือเป็น 
+                        <b>Unallocated Space</b> เพียงก้อนเดียว แล้วกด <b>Next</b> ระบบ Windows จะสร้างโครงสร้างพาร์ทิชัน GPT ใหม่อย่างถูกต้องเอง
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center text-sm">
+        <p>Interactive Guide based on OS Reinstallation Best Practices.</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STATE ---
+        const rufusSteps = [
+            { title: "เสียบ USB & เปิด Rufus", desc: "เสียบ USB Flash Drive เข้ากับคอมพิวเตอร์ แล้วเปิดโปรแกรม Rufus", extra: "" },
+            { title: "Device", desc: "เลือก USB Flash Drive ที่ต้องการใช้งานในช่อง Device", extra: "ตรวจสอบให้แน่ใจว่าเลือกไดรฟ์ถูกต้อง เพราะข้อมูลจะถูกลบทั้งหมด" },
+            { title: "Boot selection", desc: "คลิกปุ่ม SELECT เพื่อเลือกไฟล์ ISO ของระบบปฏิบัติการที่ดาวน์โหลดไว้", extra: "" },
+            { title: "Partition scheme", desc: "ตั้งค่ารูปแบบ Partition (สำคัญมาก)", extra: "เลือก GPT สำหรับคอมพิวเตอร์ใหม่ (UEFI) หรือ MBR สำหรับเครื่องเก่า (Legacy)" },
+            { title: "Target system", desc: "ระบบจะล็อกค่าอัตโนมัติตาม Partition ที่เลือก", extra: "GPT จะล็อกเป็น UEFI (non CSM) / MBR จะล็อกเป็น BIOS" },
+            { title: "Volume label", desc: "ตั้งชื่อ USB ตามต้องการ", extra: "ตัวอย่างเช่น: Win11_Install" },
+            { title: "File system", desc: "แนะนำให้ปล่อยเป็นค่าเริ่มต้นที่โปรแกรมกำหนด", extra: "ปกติจะเป็น NTFS หรือ FAT32 ขึ้นอยู่กับไฟล์ ISO" },
+            { title: "คลิก START", desc: "กดปุ่ม START เพื่อเริ่มกระบวนการ", extra: "สำหรับ Win11 จะมี Pop-up ถามเรื่องข้ามการตรวจเช็ค TPM 2.0 / Secure Boot ติ๊กเลือกได้ตามต้องการแล้วกด OK" },
+            { title: "เสร็จสิ้น", desc: "รอจนกระทั่งแถบสถานะขึ้นสีเขียวว่า READY", extra: "ดึง USB ออกไปใช้ติดตั้งได้เลย!" }
+        ];
+
+        const hotkeys = {
+            "ASUS": { bios: "Del หรือ F2", boot: "F8" },
+            "Gigabyte / AORUS": { bios: "Del", boot: "F12" },
+            "MSI": { bios: "Del", boot: "F11" },
+            "ASRock": { bios: "Del หรือ F2", boot: "F11" },
+            "Acer": { bios: "F2 หรือ Del", boot: "F12 (บางรุ่นต้องเปิดใน BIOS ก่อน)" },
+            "HP": { bios: "F10", boot: "F9" },
+            "Dell": { bios: "F2", boot: "F12" },
+            "Lenovo": { bios: "F2 หรือ Fn+F2 (หรือปุ่ม Novo)", boot: "F12 หรือ Fn+F12" }
+        };
+
+        const faqs = [
+            {
+                q: "1. ไม่เจอ USB ในหน้าเลือกบูต (Boot Menu)",
+                cause: "USB อาจจะถูกเขียนพาร์ทิชันมาในโหมดที่ขัดแย้งกับตัวเมนบอร์ด (เช่น ทำ USB เป็น GPT แต่บอร์ดเปิดโหมด Legacy)",
+                fix: "เช็คใน BIOS ว่าใช้โหมดอะไร และสร้าง USB ด้วย Rufus ใหม่ให้ตรงกัน หรือปิดโหมด CSM ใน BIOS แล้วลองเปลี่ยนช่องเสียบเป็นพอร์ตหลังเคส"
+            },
+            {
+                q: "2. ขึ้นข้อผิดพลาด Secure Boot Violation",
+                cause: "เมนบอร์ดบล็อกการบูตเพราะไฟล์ติดตั้งไม่ผ่านการยืนยันความปลอดภัย",
+                fix: "ปิด Secure Boot ในหน้า BIOS ชั่วคราว (Disabled) หรือถ้าลง Win11 ต้องใช้ ISO แท้และเขียนโหมด UEFI ให้ถูกต้อง"
+            },
+            {
+                q: "3. ระบบวนกลับมาหน้าติดตั้งใหม่ตั้งแต่ต้น หลังจากรีสตาร์ท",
+                cause: "คอมพิวเตอร์บูตวนกลับมาที่ USB เป็นอันดับแรกซ้ำ เพราะสลับลำดับบูตถาวรไว้ใน BIOS",
+                fix: "ดึง USB ออกระหว่างเครื่องกำลังรีสตาร์ท หรือเข้า Boot Menu เพื่อเลือกบูตจาก SSD ตัวที่เพิ่งลง OS ไป"
+            }
+        ];
+
+        // --- RUFUS INTERACTIVE LOGIC ---
+        let currentStep = 0;
+        const domStepCounter = document.getElementById('step-counter');
+        const domStepTitle = document.getElementById('step-title');
+        const domStepDesc = document.getElementById('step-desc');
+        const domStepExtra = document.getElementById('step-extra');
+        const domBtnPrev = document.getElementById('btn-prev');
+        const domBtnNext = document.getElementById('btn-next');
+        const domStepDots = document.getElementById('step-dots');
+
+        function renderRufus() {
+            const data = rufusSteps[currentStep];
+            domStepCounter.innerText = `ขั้นตอนที่ ${currentStep + 1} / ${rufusSteps.length}`;
+            domStepTitle.innerText = data.title;
+            domStepDesc.innerText = data.desc;
+            
+            if (data.extra) {
+                domStepExtra.innerText = `💡 ${data.extra}`;
+                domStepExtra.classList.remove('hidden');
+            } else {
+                domStepExtra.classList.add('hidden');
+            }
+
+            domBtnPrev.disabled = currentStep === 0;
+            domBtnNext.disabled = currentStep === rufusSteps.length - 1;
+
+            // Render Dots
+            domStepDots.innerHTML = '';
+            for (let i = 0; i < rufusSteps.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-2 h-2 rounded-full transition-colors ${i === currentStep ? 'bg-blue-600' : 'bg-stone-200'}`;
+                domStepDots.appendChild(dot);
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < rufusSteps.length - 1) {
+                currentStep++;
+                renderRufus();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderRufus();
+            }
+        }
+
+        // --- HOTKEY INTERACTIVE LOGIC ---
+        const domBrandButtons = document.getElementById('brand-buttons');
+        const domHotkeyResult = document.getElementById('hotkey-result');
+        let selectedBrandBtn = null;
+
+        function renderHotkeys() {
+            Object.keys(hotkeys).forEach(brand => {
+                const btn = document.createElement('button');
+                btn.className = 'px-4 py-2 bg-white border border-stone-200 text-stone-700 rounded-lg text-sm hover:bg-stone-50 transition brand-btn font-medium';
+                btn.innerText = brand;
+                btn.onclick = () => selectBrand(brand, btn);
+                domBrandButtons.appendChild(btn);
+            });
+        }
+
+        function selectBrand(brand, btnElement) {
+            // Update Active State
+            if (selectedBrandBtn) {
+                selectedBrandBtn.classList.remove('active');
+            }
+            btnElement.classList.add('active');
+            selectedBrandBtn = btnElement;
+
+            // Display Result
+            const data = hotkeys[brand];
+            domHotkeyResult.innerHTML = `
+                <div class="text-left space-y-4">
+                    <h4 class="font-bold text-lg text-blue-700 border-b border-stone-100 pb-2">${brand}</h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-stone-50 p-3 rounded border border-stone-100">
+                            <span class="block text-xs text-stone-500 uppercase tracking-wider mb-1">เข้า BIOS/UEFI</span>
+                            <span class="font-bold text-stone-800 text-lg bg-white px-2 py-1 rounded shadow-sm border border-stone-200 inline-block">${data.bios}</span>
+                        </div>
+                        <div class="bg-stone-50 p-3 rounded border border-stone-100">
+                            <span class="block text-xs text-stone-500 uppercase tracking-wider mb-1">เข้า Boot Menu</span>
+                            <span class="font-bold text-stone-800 text-lg bg-white px-2 py-1 rounded shadow-sm border border-stone-200 inline-block">${data.boot}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- FAQ LOGIC ---
+        const domFaqContainer = document.getElementById('faq-container');
+        function renderFaqs() {
+            faqs.forEach((faq, index) => {
+                const item = document.createElement('div');
+                item.className = 'border border-stone-200 rounded-xl overflow-hidden';
+                item.innerHTML = `
+                    <button class="w-full text-left p-4 bg-stone-50 hover:bg-stone-100 font-bold text-stone-800 flex justify-between items-center transition" onclick="toggleFaq(${index})">
+                        <span>${faq.q}</span>
+                        <span class="text-stone-400" id="faq-icon-${index}">&#x25BC;</span>
+                    </button>
+                    <div class="p-4 bg-white hidden border-t border-stone-100" id="faq-content-${index}">
+                        <div class="mb-3">
+                            <span class="text-xs font-bold bg-red-100 text-red-700 px-2 py-1 rounded uppercase mr-2">สาเหตุ</span>
+                            <span class="text-sm text-stone-700">${faq.cause}</span>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded uppercase mr-2">ทางแก้</span>
+                            <span class="text-sm text-stone-700">${faq.fix}</span>
+                        </div>
+                    </div>
+                `;
+                domFaqContainer.appendChild(item);
+            });
+        }
+
+        function toggleFaq(index) {
+            const content = document.getElementById(`faq-content-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerHTML = '&#x25B2;';
+            } else {
+                content.classList.add('hidden');
+                icon.innerHTML = '&#x25BC;';
+            }
+        }
+
+        // --- CHART JS LOGIC ---
+        function initChart() {
+            const ctx = document.getElementById('partitionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['GPT (UEFI)', 'MBR (Legacy)'],
+                    datasets: [{
+                        label: 'จำนวน Partition ย่อยสูงสุด',
+                        data: [128, 4],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.8)', // Blue 600
+                            'rgba(168, 162, 158, 0.6)' // Stone 400
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(168, 162, 158, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // MANDATORY: Allows container to dictate height
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + ' พาร์ทิชัน';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'จำนวน (พาร์ทิชัน)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            renderRufus();
+            renderHotkeys();
+            renderFaqs();
+            initChart();
+        };
+
+    </script>
+</body>
+</html>
