@@ -1,119 +1,226 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบการเรียนรู้นามสกุลไฟล์ภาพ - ครูเจอาร์</title>
+    <title>Modern Graphics Guide | ครูเจอาร์</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Prompt', 'sans-serif'] },
+                    animation: {
+                        'gradient-x': 'gradient-x 15s ease infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'left center'
+                            },
+                            '50%': {
+                                'background-size': '200% 200%',
+                                'background-position': 'right center'
+                            }
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Prompt', sans-serif; }
+        /* Custom Background Pattern */
+        body {
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.15), transparent 25%),
+                              radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 25%);
+            color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <header class="bg-blue-700 text-white shadow-lg">
-        <div class="container mx-auto px-6 py-12 text-center">
-            <h1 class="text-4xl font-bold mb-4">เรียนรู้เรื่อง "นามสกุลไฟล์ภาพ" ในงานกราฟิก</h1>
-            <p class="text-xl mb-2">โดย ครูเจอาร์ ปฎิภาณ พานทอง</p>
-            <p class="text-md font-light text-blue-200">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล | วิทยาลัยอาชีวศึกษาสุรินทร์</p>
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300 glass-card">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="font-bold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
+                DBT-SRVC
+            </div>
+            <div class="text-sm font-light text-slate-300">
+                วิทยาลัยอาชีวศึกษาสุรินทร์
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex-grow flex items-center">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 text-center" data-aos="zoom-in" data-aos-duration="1000">
+            <div class="inline-block mb-4 px-4 py-1.5 rounded-full glass-card text-cyan-400 text-sm font-medium tracking-wide">
+                ✨ Digital Business Technology
+            </div>
+            <h1 class="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+                เจาะลึกโลกของ <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-gradient-x">
+                    นามสกุลไฟล์กราฟิก
+                </span>
+            </h1>
+            <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto font-light">
+                เข้าใจความแตกต่างของไฟล์ภาพแต่ละประเภท เพื่อการนำไปใช้งานในโปรแกรมออกแบบและพัฒนาเว็บไซต์อย่างมืออาชีพ โดย ครูเจอาร์
+            </p>
         </div>
     </header>
 
-    <main class="container mx-auto px-6 py-10">
+    <main class="max-w-7xl mx-auto px-6 py-12 relative z-10 space-y-32">
 
-        <section class="mb-16">
-            <h2 class="text-3xl font-semibold border-l-4 border-blue-600 pl-4 mb-8">1. โปรแกรมกราฟิกและนามสกุลไฟล์ต้นฉบับ</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
-                    <div class="text-blue-600 text-4xl mb-4 font-bold">Ps</div>
-                    <h3 class="text-xl font-bold mb-2">Adobe Photoshop</h3>
-                    <p class="text-gray-600 mb-2">โปรแกรมจัดการภาพถ่ายและตกแต่งภาพแบบ Raster (Pixel)</p>
-                    <span class="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">ไฟล์ต้นฉบับ: .PSD</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
-                    <div class="text-orange-500 text-4xl mb-4 font-bold">Ai</div>
-                    <h3 class="text-xl font-bold mb-2">Adobe Illustrator</h3>
-                    <p class="text-gray-600 mb-2">โปรแกรมวาดภาพและออกแบบลายเส้นแบบ Vector (ไม่แตกเมื่อขยาย)</p>
-                    <span class="inline-block bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full">ไฟล์ต้นฉบับ: .AI / .EPS</span>
-                </div>
-                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition">
-                    <div class="text-teal-500 text-4xl mb-4 font-bold">C</div>
-                    <h3 class="text-xl font-bold mb-2">Canva</h3>
-                    <p class="text-gray-600 mb-2">แพลตฟอร์มออกแบบกราฟิกออนไลน์ที่ใช้งานง่าย เหมาะสำหรับงานสำเร็จรูป</p>
-                    <span class="inline-block bg-teal-100 text-teal-800 text-sm px-3 py-1 rounded-full">ส่งออกเป็น: .PNG / .JPG / .PDF</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="mb-16">
-            <h2 class="text-3xl font-semibold border-l-4 border-blue-600 pl-4 mb-8">2. นามสกุลไฟล์ภาพที่ควรรู้จัก</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-2">.JPG / .JPEG</h4>
-                    <p class="text-sm text-gray-600 mb-3">Joint Photographic Experts Group</p>
-                    <ul class="text-sm text-gray-700 list-disc pl-5">
-                        <li>บีบอัดไฟล์ได้เล็ก</li>
-                        <li>ไม่มีพื้นหลังโปร่งใส</li>
-                        <li>เหมาะสำหรับ: ภาพถ่ายทั่วไป, ใช้บนเว็บไซต์เพื่อโหลดเร็ว</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-2">.PNG</h4>
-                    <p class="text-sm text-gray-600 mb-3">Portable Network Graphics</p>
-                    <ul class="text-sm text-gray-700 list-disc pl-5">
-                        <li>ความละเอียดสูง ไม่สูญเสียความคมชัด</li>
-                        <li><b>รองรับพื้นหลังโปร่งใส (Transparent)</b></li>
-                        <li>เหมาะสำหรับ: โลโก้, กราฟิกบนเว็บไซต์, แบนเนอร์</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-2">.GIF</h4>
-                    <p class="text-sm text-gray-600 mb-3">Graphics Interchange Format</p>
-                    <ul class="text-sm text-gray-700 list-disc pl-5">
-                        <li>จำกัดสีแค่ 256 สี</li>
-                        <li><b>รองรับภาพเคลื่อนไหว (Animation)</b></li>
-                        <li>เหมาะสำหรับ: ภาพเคลื่อนไหวสั้นๆ, มีม (Meme)</li>
-                    </ul>
-                </div>
-
-                <div class="bg-white border border-gray-200 rounded-lg p-5">
-                    <h4 class="text-2xl font-bold text-gray-800 mb-2">.SVG</h4>
-                    <p class="text-sm text-gray-600 mb-3">Scalable Vector Graphics</p>
-                    <ul class="text-sm text-gray-700 list-disc pl-5">
-                        <li>เป็นภาพแบบเวกเตอร์ เขียนด้วยโค้ด XML</li>
-                        <li><b>ขยายใหญ่แค่ไหนก็ไม่แตก</b></li>
-                        <li>เหมาะสำหรับ: ไอคอนบนเว็บไซต์, กราฟิก UI</li>
-                    </ul>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
-            <h2 class="text-2xl font-bold text-blue-800 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                เกร็ดความรู้ที่น่ารู้จากครูเจอาร์
+        <section>
+            <h2 class="text-3xl font-bold mb-10 flex items-center" data-aos="fade-right">
+                <span class="w-8 h-1 bg-cyan-500 mr-4 rounded-full"></span>
+                โปรแกรมกราฟิกยอดฮิต
             </h2>
-            <div class="space-y-4">
-                <p class="text-gray-700">💡 <b>WebP คืออะไร?</b> ปัจจุบันถ้าเราเซฟรูปจากเน็ต มักจะเจอไฟล์ <code>.webp</code> ซึ่งเป็นฟอร์แมตใหม่จาก Google ที่ทำให้ภาพชัดเท่า PNG หรือ JPG แต่ขนาดไฟล์เล็กกว่ามาก! สายทำเว็บแอปพลิเคชันต้องรู้จักไว้เลยครับ</p>
-                <p class="text-gray-700">💡 <b>Raster vs Vector:</b> ถ่ายรูปจากกล้อง = Raster (พิกเซลซูมแล้วแตก) | วาดโลโก้ใน Illustrator = Vector (ซูมเท่าตึกก็ไม่แตก)</p>
-                <p class="text-gray-700">💡 <b>เคล็ดลับการเซฟงาน:</b> หากนักเรียนต้องการนำรูปไปตัดต่อใน CapCut หรือใช้เป็น Assets ในการเขียนเว็บ (HTML/CSS/React) ควรเลือกใช้ไฟล์ <code>.png</code> แบบลบพื้นหลัง เพื่อให้จัดวางซ้อนกับองค์ประกอบอื่นได้เนียนที่สุดครับ</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-900/50 flex items-center justify-center text-blue-400 text-2xl font-bold mb-6 border border-blue-500/30 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                        Ps
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Photoshop</h3>
+                    <p class="text-slate-400 mb-6 text-sm">สุดยอดโปรแกรมจัดการภาพแบบ Raster แก้ไข ปรับแต่ง รีทัชภาพถ่ายได้ระดับพิกเซล</p>
+                    <div class="inline-flex items-center text-xs font-mono bg-slate-800/80 text-cyan-300 px-3 py-1 rounded-lg">
+                        Native: .PSD
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-16 h-16 rounded-2xl bg-orange-900/50 flex items-center justify-center text-orange-400 text-2xl font-bold mb-6 border border-orange-500/30 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                        Ai
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Illustrator</h3>
+                    <p class="text-slate-400 mb-6 text-sm">ราชาแห่งงาน Vector ออกแบบโลโก้ วาดรูปทรงเรขาคณิต ขยายใหญ่แค่ไหนภาพก็ไม่แตก</p>
+                    <div class="inline-flex items-center text-xs font-mono bg-slate-800/80 text-orange-300 px-3 py-1 rounded-lg">
+                        Native: .AI / .EPS
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8 hover:-translate-y-2 transition-transform duration-300 group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-16 h-16 rounded-2xl bg-teal-900/50 flex items-center justify-center text-teal-400 text-2xl font-bold mb-6 border border-teal-500/30 group-hover:bg-teal-500 group-hover:text-white transition-colors">
+                        C
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Canva</h3>
+                    <p class="text-slate-400 mb-6 text-sm">แพลตฟอร์ม Cloud-based ที่คนรุ่นใหม่ต้องใช้ ทำงานไว จบงานได้ทั้งแบนเนอร์และพรีเซนต์</p>
+                    <div class="inline-flex items-center text-xs font-mono bg-slate-800/80 text-teal-300 px-3 py-1 rounded-lg">
+                        Export: .PNG / .JPG / .PDF
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold mb-10 flex items-center" data-aos="fade-right">
+                <span class="w-8 h-1 bg-purple-500 mr-4 rounded-full"></span>
+                เจาะลึกนามสกุลไฟล์ภาพ
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="absolute -right-4 -top-4 text-slate-700/30 text-8xl font-black">JPG</div>
+                    <h4 class="text-xl font-bold text-white mb-1 relative z-10">.JPG / .JPEG</h4>
+                    <p class="text-xs text-slate-500 mb-4 font-mono relative z-10">Joint Photographic</p>
+                    <ul class="text-sm text-slate-300 space-y-2 relative z-10">
+                        <li class="flex items-start"><span class="text-green-400 mr-2">✓</span> บีบอัดไฟล์ได้เล็กมาก</li>
+                        <li class="flex items-start"><span class="text-red-400 mr-2">✗</span> ไม่รองรับพื้นหลังใส</li>
+                        <li class="text-cyan-400 mt-2">📌 เหมาะกับภาพถ่ายทั่วไปบนเว็บ</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="absolute -right-4 -top-4 text-slate-700/30 text-8xl font-black">PNG</div>
+                    <h4 class="text-xl font-bold text-white mb-1 relative z-10">.PNG</h4>
+                    <p class="text-xs text-slate-500 mb-4 font-mono relative z-10">Portable Network Graphics</p>
+                    <ul class="text-sm text-slate-300 space-y-2 relative z-10">
+                        <li class="flex items-start"><span class="text-green-400 mr-2">✓</span> รองรับพื้นหลังโปร่งใส (Alpha)</li>
+                        <li class="flex items-start"><span class="text-green-400 mr-2">✓</span> คงความคมชัดแม้เซฟซ้ำ</li>
+                        <li class="text-cyan-400 mt-2">📌 เหมาะกับโลโก้, ไอคอน, กราฟิกเว็บ</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden ring-1 ring-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.15)]" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="absolute -right-4 -top-4 text-slate-700/30 text-8xl font-black">SVG</div>
+                    <h4 class="text-xl font-bold text-white mb-1 relative z-10">.SVG</h4>
+                    <p class="text-xs text-slate-500 mb-4 font-mono relative z-10">Scalable Vector</p>
+                    <ul class="text-sm text-slate-300 space-y-2 relative z-10">
+                        <li class="flex items-start"><span class="text-purple-400 mr-2">⭐</span> สร้างจากโค้ด (XML)</li>
+                        <li class="flex items-start"><span class="text-purple-400 mr-2">⭐</span> ขยายระดับ 1000% ก็ไม่แตก</li>
+                        <li class="text-purple-300 mt-2">📌 นิยมสูงสุดในการทำ UI เว็บไซต์ยุคใหม่</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="absolute -right-2 -top-4 text-slate-700/30 text-8xl font-black">WEBP</div>
+                    <h4 class="text-xl font-bold text-white mb-1 relative z-10">.WebP</h4>
+                    <p class="text-xs text-slate-500 mb-4 font-mono relative z-10">Next-Gen Format</p>
+                    <ul class="text-sm text-slate-300 space-y-2 relative z-10">
+                        <li class="flex items-start"><span class="text-green-400 mr-2">✓</span> ชัดเท่า PNG แต่ไฟล์เล็กกว่า</li>
+                        <li class="flex items-start"><span class="text-green-400 mr-2">✓</span> พัฒนาโดย Google</li>
+                        <li class="text-cyan-400 mt-2">📌 อนาคตของการทำเว็บโหลดไว</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <div class="relative rounded-3xl p-[1px] bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 blur-xl opacity-20"></div>
+                <div class="relative glass-card rounded-3xl p-8 lg:p-12">
+                    <h2 class="text-2xl lg:text-3xl font-bold text-white mb-6 flex items-center">
+                        <span class="text-3xl mr-3">💡</span> เกร็ดความรู้แบบฉบับนักพัฒนา
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h5 class="text-lg font-semibold text-cyan-300 mb-2">ตัดต่อวีดีโอต้องใช้ไฟล์อะไร?</h5>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                เวลาทำกราฟิกใน Photoshop หรือ Canva เพื่อเอาไปซ้อนใน CapCut ต้อง Export เป็น <b>.PNG แบบ Transparent (ลบพื้นหลัง)</b> เท่านั้น เพื่อไม่ให้มีขอบขาวติดไปในงานวีดีโอ
+                            </p>
+                        </div>
+                        <div>
+                            <h5 class="text-lg font-semibold text-purple-300 mb-2">Dev ยุคใหม่เลือกใช้อะไร?</h5>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                หากนักเรียนกำลังเขียนเว็บแอปพลิเคชัน (HTML/CSS) การใช้ <b>.SVG</b> สำหรับไอคอน โลโก้ และ <b>.WebP</b> สำหรับรูปภาพประกอบ จะช่วยให้คะแนนความเร็ว (PageSpeed) ของเว็บพุ่งกระฉูด!
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-gray-800 text-white py-8 mt-12">
-        <div class="container mx-auto px-6 text-center">
-            <p class="font-semibold text-lg">เว็บไซต์สื่อการสอน โดย ครูเจอาร์ ปฎิภาณ พานทอง</p>
-            <p class="text-gray-400 text-sm mt-2">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยอาชีวศึกษาสุรินทร์ (DBT-SRVC)</p>
-            <p class="text-gray-500 text-xs mt-4">&copy; 2026 Digital Business Technology, Surin Vocational College.</p>
+    <footer class="mt-20 border-t border-slate-800 bg-slate-900/50 backdrop-blur-lg">
+        <div class="max-w-7xl mx-auto px-6 py-8 text-center flex flex-col items-center">
+            <div class="w-12 h-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full mb-6"></div>
+            <p class="text-lg font-medium text-slate-200">สื่อการสอนนวัตกรรมดิจิทัล โดย ครูเจอาร์ ปฎิภาณ พานทอง</p>
+            <p class="text-sm text-slate-500 mt-2">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล (DBT-SRVC) | วิทยาลัยอาชีวศึกษาสุรินทร์</p>
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 50,
+        });
+    </script>
 </body>
 </html>
