@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานการประเมินผลการปฏิบัติงาน - ครูปฏิภาณ พานทอง | วิทยาลัยอาชีวศึกษาสุรินทร์</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              gold: '#f59e0b',
+              amber: '#d97706',
+              navy: '#0f172a',
+              accent: '#00d2ff'
+            }
+          },
+          fontFamily: {
+            prompt: ['Prompt', 'Sarabun', 'sans-serif'],
+            sarabun: ['Sarabun', 'Prompt', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(229, 231, 235, 0.8);
+    }
+    
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .badge-gradient {
+      background: linear-gradient(135deg, #00d2ff 0%, #0072ff 100%);
+    }
+
+    .gold-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(14, 165, 233, 0.5);
+      border-radius: 10px;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .print-page-break {
+        page-break-before: always;
+      }
+      .glass-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        background: white !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen selection:bg-sky-500 selection:text-white">
+
+  <!-- Header / Navigation -->
+  <header class="sticky top-0 z-40 w-full glass-card border-b no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+          <i class="fa-solid fa-graduation-cap text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-500 bg-clip-text text-transparent dark:from-sky-400 dark:to-indigo-300">
+            SRVC Digital Performance Report Padipan
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล • วิทยาลัยอาชีวศึกษาสุรินทร์
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-sky-100 text-sky-800 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
+          <i class="fa-solid fa-calendar-check text-sky-500"></i> รอบที่ 1 (1 เม.ย. - 30 ก.ย. 2569)
+        </span>
+
+        <!-- Theme Toggle Button -->
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-200/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-colors">
+          <i class="fa-solid fa-moon dark:hidden"></i>
+          <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+        </button>
+
+       
+		
+		  <button onclick="window.print()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-medium text-xs sm:text-sm shadow-md shadow-sky-500/20 transition-all">
+         <a href="https://drive.google.com/drive/folders/1uqqbSBwKXWTxBfFEwtTX-P6aleouZqW1?usp=drive_link"
+   target="_blank"
+   class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-medium text-xs sm:text-sm shadow-md transition-all">
+  <i class="fa-solid fa-download"></i>
+  <span>ดาวน์โหลดเอกสาร</span>
+</a>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- HERO PROFILE CARD -->
+    <section class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <!-- Background Decorative Blobs -->
+      <div class="absolute -top-24 -right-24 w-80 h-80 bg-sky-500/10 dark:bg-sky-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/10 dark:bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8">
+        <!-- Left Column: Avatar & Teacher Info -->
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+          <div class="relative group">
+            <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl p-1 bg-gradient-to-tr from-sky-500 via-indigo-500 to-amber-400 shadow-xl overflow-hidden">
+              <div class="w-full h-full rounded-xl bg-slate-900 flex flex-col items-center justify-center text-white relative group-hover:scale-105 transition-transform duration-300">
+                <i class="fa-solid fa-user-tie text-5xl text-sky-400 my-2"></i>
+                <span class="text-[10px] uppercase font-bold tracking-widest text-sky-200 bg-sky-950/80 px-2 py-0.5 rounded-md border border-sky-500/30">Digital Tech</span>
+              </div>
+            </div>
+            <span class="absolute -bottom-2 -right-2 bg-emerald-500 text-white text-xs px-2.5 py-0.5 rounded-full border-2 border-slate-900 font-semibold shadow-md flex items-center gap-1">
+              <i class="fa-solid fa-circle-check text-[10px]"></i> คศ.1
+            </span>
+          </div>
+
+          <div class="space-y-3 max-w-xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              <i class="fa-solid fa-award text-amber-500"></i> รายงานการประเมินตนเอง (Self Assessment Report)
+            </div>
+            
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                นายปฏิภาณ พานทอง <span class="text-sky-600 dark:text-sky-400 text-lg font-normal">(ครูเจ / ครูเจอาร์)</span>
+              </h2>
+              <p class="text-sm font-medium text-slate-600 dark:text-slate-300 mt-1">
+                ตำแหน่ง ครู คศ.1 • แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล
+              </p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center justify-center sm:justify-start gap-2 mt-1">
+                <i class="fa-solid fa-school text-sky-500"></i> วิทยาลัยอาชีวศึกษาสุรินทร์
+              </p>
+            </div>
+
+            <!-- Key Highlight Badges -->
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                <i class="fa-solid fa-trophy text-amber-500"></i> Silver Coding Thailand 2026
+              </span>
+              <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30 flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-sky-500"></i> วูดแบดจ์ 2 ท่อน (W.B. 517)
+              </span>
+              <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                <i class="fa-solid fa-user-check text-emerald-500"></i> ไม่ขาด/ไม่ลา/ไม่สาย 100%
+              </span>
+              <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/30 flex items-center gap-1.5">
+                <i class="fa-solid fa-book-bookmark text-purple-500"></i> วิจัย CBL 5 บท
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Self Score Card -->
+        <div class="w-full lg:w-auto flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-2xl p-6 shadow-2xl border border-sky-500/20 relative">
+          <div class="text-xs font-semibold uppercase tracking-widest text-sky-400 mb-1">
+            คะแนนประเมินตนเองรวม
+          </div>
+          <div class="flex items-baseline gap-1 my-1">
+            <span class="text-5xl font-black bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">218</span>
+            <span class="text-slate-400 text-lg font-medium">/ 235</span>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-3 my-3 overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-gradient-to-r from-sky-500 via-teal-400 to-emerald-400 h-full rounded-full transition-all duration-1000" style="width: 92.77%;"></div>
+          </div>
+          <div class="flex items-center justify-between w-full text-xs font-medium text-slate-300">
+            <span>คิดเป็น 92.77%</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">ระดับดีเยี่ยม (A+)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY KPI STATS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Card 1 -->
+      <div class="glass-card rounded-2xl p-5 flex items-center gap-4 hover:shadow-lg transition-shadow">
+        <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl font-bold">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">คะแนนรวมทั้งหมด</p>
+          <p class="text-xl font-bold text-slate-900 dark:text-white">218 <span class="text-xs text-slate-400">/ 235</span></p>
+          <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">ผ่านเกณฑ์การประเมิน 92.77%</span>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="glass-card rounded-2xl p-5 flex items-center gap-4 hover:shadow-lg transition-shadow">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl font-bold">
+          <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">ตัวชี้วัดที่ปฏิบัติตามเกณฑ์</p>
+          <p class="text-xl font-bold text-slate-900 dark:text-white">26 <span class="text-xs text-slate-400">/ 26 ข้อ</span></p>
+          <span class="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">ครบถ้วนทุกหมวดหมู่ 100%</span>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="glass-card rounded-2xl p-5 flex items-center gap-4 hover:shadow-lg transition-shadow">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">รางวัลนวัตกรรม & สิ่งประดิษฐ์</p>
+          <p class="text-xl font-bold text-slate-900 dark:text-white">3 <span class="text-xs text-slate-400">รางวัลหลัก</span></p>
+          <span class="text-[11px] text-amber-600 dark:text-amber-400 font-medium">รวมงบสนับสนุน 206,200 บ.</span>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="glass-card rounded-2xl p-5 flex items-center gap-4 hover:shadow-lg transition-shadow">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl font-bold">
+          <i class="fa-solid fa-user-clock"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">สถิติการปฏิบัติราชการ</p>
+          <p class="text-xl font-bold text-slate-900 dark:text-white">100% <span class="text-xs text-slate-400">ความตรงต่อเวลา</span></p>
+          <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">ไม่ขาด / ไม่ลา / ไม่สาย</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARTS SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Radar Chart: Overall Competencies -->
+      <div class="lg:col-span-6 glass-card rounded-3xl p-6 shadow-md flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-sky-500"></i> การกระจายสมรรถนะการปฏิบัติงาน 6 ด้าน
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">วิเคราะห์ความสมดุลการปฏิบัติงานตามภาระงาน</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-medium">Radar View</span>
+        </div>
+        <div class="relative w-full h-72 sm:h-80 flex items-center justify-center">
+          <canvas id="competencyRadarChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Bar Chart: Category Score Comparison -->
+      <div class="lg:col-span-6 glass-card rounded-3xl p-6 shadow-md flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-indigo-500"></i> สรุปคะแนนเปรียบเทียบตามหมวดหมู่
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">เปรียบเทียบระหว่างคะแนนเต็ม และ คะแนนประเมินตนเอง</p>
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium">Bar View</span>
+        </div>
+        <div class="relative w-full h-72 sm:h-80 flex items-center justify-center">
+          <canvas id="categoryBarChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPLETE 26 INDICATORS SECTION -->
+    <section class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-list text-sky-500"></i> รายละเอียดตัวชี้วัดผลการปฏิบัติงาน (26 ตัวชี้วัด)
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">สืบค้น คัดกรอง และดูรายละเอียดหลักฐานการประเมินตนเอง</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative w-full md:w-72">
+          <input type="text" id="searchInput" onkeyup="filterIndicators()" placeholder="ค้นหาตัวชี้วัด หรือคำขวัญ/ผลงาน..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition-all">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar no-print" id="filterTabs">
+        <button onclick="setFilter('all')" class="filter-btn active px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-sky-600 text-white shadow-md shadow-sky-500/20 transition-all">
+          ทั้งหมด (26)
+        </button>
+        <button onclick="setFilter('innovation')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          🏆 รางวัล & นวัตกรรม (3)
+        </button>
+        <button onclick="setFilter('duty')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          💼 หน้าที่พิเศษ (3)
+        </button>
+        <button onclick="setFilter('care')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          👥 ดูแลผู้เรียน (5)
+        </button>
+        <button onclick="setFilter('guard')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          🛡️ กิจกรรมเวร (2)
+        </button>
+        <button onclick="setFilter('teaching')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          📖 การเรียนการสอน & วิจัย (7)
+        </button>
+        <button onclick="setFilter('academic')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          🏫 บรรยากาศ & วิชาการ (4)
+        </button>
+        <button onclick="setFilter('development')" class="filter-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-all">
+          🌟 พัฒนาตนเอง & จิตอาสา (6)
+        </button>
+      </div>
+
+      <!-- Indicators Grid -->
+      <div id="indicatorsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- JS dynamically populates this grid -->
+      </div>
+    </section>
+
+    <!-- COMPARISON SUMMARY TABLE SECTION -->
+    <section class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+      <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <i class="fa-solid fa-table text-indigo-500"></i> ตารางสรุปการประเมินตนเองแยกตามหมวดหมู่ (Self Assessment Summary)
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400">ตารางแสดงคะแนนเต็ม คะแนนที่ประเมินได้ สัดส่วนร้อยละ และสถานะการผ่านเกณฑ์</p>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
+          ผ่านเกณฑ์การประเมินระดับดีเยี่ยม
+        </span>
+      </div>
+
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-bold uppercase text-xs border-b border-slate-200 dark:border-slate-800">
+              <th class="py-3.5 px-4">หมวดการประเมิน</th>
+              <th class="py-3.5 px-4 text-center">จำนวนข้อ</th>
+              <th class="py-3.5 px-4 text-center">คะแนนเต็ม</th>
+              <th class="py-3.5 px-4 text-center">คะแนนประเมินได้</th>
+              <th class="py-3.5 px-4 text-center">คิดเป็นร้อยละ</th>
+              <th class="py-3.5 px-4 text-center">สถานะ</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 dark:divide-slate-800/60" id="summaryTableBody">
+            <!-- Dynamically injected rows -->
+          </tbody>
+          <tfoot>
+            <tr class="bg-sky-50 dark:bg-sky-950/50 font-bold text-slate-900 dark:text-white text-sm border-t-2 border-sky-500">
+              <td class="py-4 px-4">รวมทั้งสิ้น (Grand Total)</td>
+              <td class="py-4 px-4 text-center">26</td>
+              <td class="py-4 px-4 text-center">235</td>
+              <td class="py-4 px-4 text-center text-sky-600 dark:text-sky-400 font-extrabold text-base">218</td>
+              <td class="py-4 px-4 text-center text-emerald-600 dark:text-emerald-400 font-extrabold text-base">92.77%</td>
+              <td class="py-4 px-4 text-center">
+                <span class="px-2.5 py-1 rounded-md bg-emerald-500 text-white text-xs font-bold shadow">ดีเยี่ยม (A+)</span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRINT ONLY SIGNATURE BLOCK -->
+    <section class="hidden print:block space-y-12 pt-8 print-page-break">
+      <div class="text-center space-y-2">
+        <h3 class="text-lg font-bold">รายงานผลการประเมินการปฏิบัติงานข้าราชการครูและบุคลากรทางการศึกษา</h3>
+        <p class="text-sm">ภาคเรียนที่ 1 ปีการศึกษา 2569 (1 เมษายน 2569 - 30 กันยายน 2569)</p>
+        <p class="text-xs">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยอาชีวศึกษาสุรินทร์</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 text-center text-sm pt-8">
+        <div class="space-y-12">
+          <p>ลงชื่อ..........................................................ผู้รับการประเมิน<br>(นายปฏิภาณ พานทอง)<br>ตำแหน่ง ครู คศ.1</p>
+        </div>
+        <div class="space-y-12">
+          <p>ลงชื่อ..........................................................ผู้ประเมิน<br>(..........................................................)<br>ตำแหน่ง กรรมการประเมินผลการปฏิบัติงาน</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- INTERACTIVE MODAL FOR INDICATOR DETAILS -->
+  <div id="indicatorModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 no-print">
+    <div class="glass-card w-full max-w-2xl rounded-3xl p-6 sm:p-8 shadow-2xl relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar" id="modalContent">
+      <!-- Close Button -->
+      <button onclick="closeModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div id="modalBody" class="space-y-6">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="mt-16 border-t border-slate-200 dark:border-slate-800 py-8 glass-card text-center text-xs text-slate-500 dark:text-slate-400 no-print">
+    <p>© 2026 Digital Performance Evaluation Report • นายปฏิภาณ พานทอง (ครูเจ / ครูเจอาร์)</p>
+    <p class="mt-1">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล วิทยาลัยอาชีวศึกษาสุรินทร์ • สังกัดสำนักงานคณะกรรมการการอาชีวศึกษา (สอศ.)</p>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC & DATA -->
+  <script>
+    // Complete 26 Indicators Dataset
+    const indicatorsData = [
+      // หมวด 1: นวัตกรรม / รางวัล (1.1 - 1.3)
+      {
+        id: "1.1",
+        catKey: "innovation",
+        category: "หมวดที่ 1: สิ่งประดิษฐ์/นวัตกรรม/แข่งขันทักษะ",
+        title: "รางวัลระดับชาติ Silver Coding Thailand 2026 (ผลงาน BugSense Paddy Box)",
+        score: 12,
+        fullScore: 12,
+        icon: "fa-trophy",
+        tagColor: "amber",
+        summary: "ผลงานระบบตรวจจับแมลงศัตรูพืชในแปลงนาข้าว BugSense Paddy Box ได้รับทุนสนับสนุน 6,200 บ. พร้อมงบพัฒนาต่อยอด 200,000 บ.",
+        details: "นำนักเรียนเข้าร่วมการแข่งขันทักษะการพัฒนาโปรแกรมและฮาร์ดแวร์ระดับชาติ ในโครงการ Coding Thailand 2026 ได้รับรางวัลเหรียญเงิน (Silver Award) จากผลงานนวัตกรรม 'BugSense Paddy Box' ซึ่งช่วยเกษตรกรตรวจจับและเตือนภัยศัตรูพืชในแปลงนาข้าวด้วย AIoT",
+        evidence: ["เกียรติบัตรรางวัลเหรียญเงินระดับชาติ Coding Thailand 2026", "หนังสืออนุมัติทุนสนับสนุน 6,200 บาท และงบพัฒนา 200,000 บาท", "ภาพถ่ายบรรยากาศการนำเสนอผลงานระดับประเทศ"]
+      },
+      {
+        id: "1.2",
+        catKey: "innovation",
+        category: "หมวดที่ 1: สิ่งประดิษฐ์/นวัตกรรม/แข่งขันทักษะ",
+        title: "รางวัลระดับภาค Silver การแข่งขันทักษะสิ่งประดิษฐ์นวัตกรรม",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-award",
+        tagColor: "amber",
+        summary: "ได้รับรางวัลเหรียญเงิน (Silver) ในการประกวดสิ่งประดิษฐ์และนวัตกรรมคนรุ่นใหม่ระดับภาค ภาคตะวันออกเฉียงเหนือ",
+        details: "ควบคุมและส่งเสริมนักศึกษาส่งผลงานเข้าร่วมการประกวดสิ่งประดิษฐ์ของคนรุ่นใหม่ ประจำปีการศึกษา 2569 ระดับภาคตะวันออกเฉียงเหนือ ได้รับรางวัลระดับเหรียญเงิน เสริมสร้างชื่อเสียงให้กับสถานศึกษา",
+        evidence: ["เกียรติบัตรรางวัลระดับภาค เหรียญเงิน", "คำสั่งแต่งตั้งครูผู้ควบคุมทีมนวัตกรรม", "รูปภาพการจัดแสดงบูธานวัตกรรมระดับภาค"]
+      },
+      {
+        id: "1.3",
+        catKey: "innovation",
+        category: "หมวดที่ 1: สิ่งประดิษฐ์/นวัตกรรม/แข่งขันทักษะ",
+        title: "รางวัลระดับจังหวัด รองอันดับ 2 ผลงาน Smart ID Pet Tag",
+        score: 7,
+        fullScore: 10,
+        icon: "fa-medal",
+        tagColor: "amber",
+        summary: "รางวัลรองชนะเลิศอันดับ 2 ระดับอาชีวศึกษาจังหวัดสุรินทร์ สิ่งประดิษฐ์ Smart ID Pet Tag",
+        details: "ฝึกซ้อมและดูแลนักเรียนในการสร้างสิ่งประดิษฐ์ป้ายชื่อสัตว์เลี้ยงอัจฉริยะ Smart ID Pet Tag เชื่อมต่อ QR & NFC Cloud System ได้รับรางวัลรองชนะเลิศอันดับ 2 ในระดับจังหวัด",
+        evidence: ["เกียรติบัตรระดับอาชีวศึกษาจังหวัดสุรินทร์", "ภาพถ่ายรับมอบรางวัล", "เอกสารสรุปรูปเล่มนวัตกรรม Smart ID Pet Tag"]
+      },
+
+      // หมวด 2: หน้าที่พิเศษ (2.1 - 2.3)
+      {
+        id: "2.1",
+        catKey: "duty",
+        category: "หมวดที่ 2: หน้าที่พิเศษ",
+        title: "ผู้ช่วยงานศูนย์ดิจิทัลและสื่อสารองค์กร",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-laptop-code",
+        tagColor: "blue",
+        summary: "ดูแลระบบสื่อสารดิจิทัล เว็บไซต์วิทยาลัย กราฟิก และการประชาสัมพันธ์องค์กรออนไลน์",
+        details: "ปฏิบัติหน้าที่ผู้ช่วยงานศูนย์ดิจิทัลและสื่อสารองค์กร ดูแลการจัดทำสื่อประชาสัมพันธ์ เว็บไซต์วิทยาลัย ออกแบบแบนเนอร์กิจกรรม และถ่ายทอดสดกิจกรรมสำคัญผ่านระบบ Streaming ของวิทยาลัย",
+        evidence: ["คำสั่งวิทยาลัยอาชีวศึกษาสุรินทร์ แต่งตั้งผู้ช่วยงานศูนย์ดิจิทัลฯ", "ผลงานการออกแบบแบนเนอร์และวิดีโอประชาสัมพันธ์", "สถิติการอัปเดตข้อมูลข่าวสารบนเว็บไซต์องค์กร"]
+      },
+      {
+        id: "2.2",
+        catKey: "duty",
+        category: "หมวดที่ 2: หน้าที่พิเศษ",
+        title: "ผู้ช่วยงานวัดผลและประเมินผล",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-file-signature",
+        tagColor: "blue",
+        summary: "บริหารจัดการระบบตรวจสอบตารางสอบ ประมวลผลคะแนน และการอนุมัติผลการเรียน",
+        details: "สนับสนุนงานวัดผลในการตรวจสอบความถูกต้องของรายวิชา การจัดตารางสอบกลางภาค-ปลายภาค และการประมวลผลคะแนนของนักเรียนนักศึกษาผ่านระบบงานทะเบียนวัดผลออนไลน์",
+        evidence: ["คำสั่งวิทยาลัยแต่งตั้งผู้ช่วยงานวัดผลฯ", "รายงานสรุปการส่งผลการเรียนของครูผู้สอนประจำภาคเรียน", "คู่มือระบบสอบออนไลน์ที่จัดทำขึ้น"]
+      },
+      {
+        id: "2.3",
+        catKey: "duty",
+        category: "หมวดที่ 2: หน้าที่พิเศษ",
+        title: "ผู้ช่วยงานวิทยาบริการและเทคโนโลยีสารสนเทศ",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-network-wired",
+        tagColor: "blue",
+        summary: "ดูแลระบบเครือข่ายอินเทอร์เน็ต เครื่องคอมพิวเตอร์ และระบบสืบค้นห้องสำนักโต๊ะหนังสือดิจิทัล",
+        details: "บำรุงรักษาระบบเครือข่ายคอมพิวเตอร์และสัญญาณ Wi-Fi ภายในอาคารเรียน สนับสนุนเทคโนโลยีเพื่อการสืบค้นข้อมูลในห้องวิทยาบริการและห้องปฏิบัติการคอมพิวเตอร์",
+        evidence: ["คำสั่งแต่งตั้งปฏิบัติหน้าที่ผู้ช่วยงานวิทยาบริการฯ", "บันทึกการซ่อมบำรุงและดูแลระบบเครือข่าย", "ภาพถ่ายกิจกรรมการให้บริการเทคโนโลยีสารสนเทศ"]
+      },
+
+      // หมวด 3-7: การดูแลช่วยเหลือผู้เรียน (3 - 7)
+      {
+        id: "3",
+        catKey: "care",
+        category: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน",
+        title: "การปฏิบัติหน้าที่เข้าแถวหน้าเสาธงและควบคุมระเบียบวินัย",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-flag",
+        tagColor: "emerald",
+        summary: "ปฏิบัติหน้าที่ครูเวรหน้าเสาธง อบรมสั่งสอน และเช็กชื่อการเข้าแถวอย่างสม่ำเสมอ 100%",
+        details: "เข้าร่วมกิจกรรมหน้าเสาธงตรงเวลา อบรมให้ความรู้เรื่องระเบียบวินัย ค่านิยมอันดีงาม พร้อมบันทึกการมาเข้าแถวของนักเรียนในปรึกษาผ่านระบบดิจิทัลทุกวัน",
+        evidence: ["สมุดบันทึกและระบบเช็กชื่อเข้าแถวออนไลน์", "ภาพถ่ายการปฏิบัติหน้าที่หน้าเสาธง", "สถิติการเข้าแถวของนักเรียนในที่ปรึกษา"]
+      },
+      {
+        id: "4",
+        catKey: "care",
+        category: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน",
+        title: "การเยี่ยมบ้านนักเรียนผ่านระบบ iteachers",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-house-user",
+        tagColor: "emerald",
+        summary: "ลงพื้นที่เยี่ยมบ้านนักเรียนและบันทึกข้อมูลผ่านระบบ iteachers ครบถ้วน 100%",
+        details: "ดำเนินการออกเยี่ยมบ้านนักเรียนในที่ปรึกษา ทั้งรูปแบบ On-site และ Online เพื่อรับทราบสภาพความเป็นอยู่ สร้างความสัมพันธ์อันดีกับผู้ปกครอง และบันทึกข้อมูลผ่านระบบ iteachers",
+        evidence: ["รายงานสรุปการเยี่ยมบ้านผ่านระบบ iteachers", "พิกัด GPS และรูปภาพการเยี่ยมบ้านนักเรียน", "แบบบันทึกการสัมภาษณ์ผู้ปกครอง"]
+      },
+      {
+        id: "5",
+        catKey: "care",
+        category: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน",
+        title: "การจัดกิจกรรมโฮมรูม (Home Room) บูรณาการคุณธรรม",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-comments",
+        tagColor: "emerald",
+        summary: "จัดกิจกรรมโฮมรูมตามสัปดาห์ เสริมสร้างทักษะชีวิต และคุณธรรมจริยธรรม",
+        details: "จัดกิจกรรมโฮมรูมทุกสัปดาห์ ให้คำปรึกษาด้านการเรียน การปรับตัวในสังคม เทคโนโลยีปลอดภัย และการวางแผนอนาคต พร้อมบันทึกสมุดโฮมรูมสมบูรณ์",
+        evidence: ["บันทึกการจัดกิจกรรมโฮมรูมประจำสัปดาห์", "ภาพถ่ายการจัดกิจกรรมโฮมรูมในชั้นเรียน", "แฟ้มสะสมงานการดูแลนักเรียน"]
+      },
+      {
+        id: "6",
+        catKey: "care",
+        category: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน",
+        title: "การคัดกรองผู้เรียนในความดูแล จำนวน 26 คน",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-users-viewfinder",
+        tagColor: "emerald",
+        summary: "ดำเนินการคัดกรองผู้เรียนกลุ่มปกติ กลุ่มเสี่ยง และกลุ่มช่วยเหลือพิเศษ ครบทั้ง 26 คน",
+        details: "วิเคราะห์และวิจัยผู้เรียนเป็นรายบุคคล เพื่อคัดกรองตามหมวดหมู่ด้านการเรียน ด้านการเงิน ด้านสุขภาพ และด้านสังคม ทำให้สามารถช่วยเหลือและทุนการศึกษาได้อย่างทันท่วงที",
+        evidence: ["แบบสรุปผลการคัดกรองนักเรียนรายบุคคล (26 คน)", "เอกสารการส่งต่อและมอบทุนการศึกษา", "ตารางจำแนกกลุ่มผู้เรียน"]
+      },
+      {
+        id: "7",
+        catKey: "care",
+        category: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน",
+        title: "การประเมินพฤติกรรมผู้เรียน (SDQ) ครบถ้วน 100%",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-heart-pulse",
+        tagColor: "emerald",
+        summary: "ประเมินพฤติกรรมเด็ก (Strengths and Difficulties Questionnaire) ครบถ้วน 3 ด้าน",
+        details: "ให้นักเรียน ผู้ปกครอง และครูผู้สอนประเมินแบบประเมิน SDQ ครบทั้ง 26 คน เพื่อนำผลมาวิเคราะห์และส่งเสริมพัฒนาการด้านจิตใจและพฤติกรรมของผู้เรียน",
+        evidence: ["แบบประเมิน SDQ จากนักเรียน ผู้ปกครอง และครู", "รายงานสรุปผลการประเมิน SDQ ภาพรวมห้องเรียน", "แผนการดูแลช่วยเหลือผู้เรียนรายบุคคล"]
+      },
+
+      // หมวด 8-9: กิจกรรมเวร (8 - 9)
+      {
+        id: "8",
+        catKey: "guard",
+        category: "หมวดที่ 8-9: กิจกรรมเวร",
+        title: "การปฏิบัติหน้าที่เวรหน้าประตูวิทยาลัย",
+        score: 7,
+        fullScore: 8,
+        icon: "fa-door-open",
+        tagColor: "purple",
+        summary: "ต้อนรับนักเรียน ตรวจการแต่งกาย และความเรียบร้อยบริเวณประตูทางเข้าวิทยาลัย",
+        details: "ปฏิบัติหน้าที่เวรประตูทางเข้าสถานศึกษาตามวันและเวลาที่ได้รับมอบหมาย ตรวจความเรียบร้อย ยาเสพติด การแต่งกาย และต้อนรับผู้ปกครองอย่างสุภาพ",
+        evidence: ["คำสั่งแต่งตั้งเวรปฏิบัติหน้าที่หน้าประตู", "สมุดลงเวลาการปฏิบัติหน้าที่เวรประจำวัน", "ภาพถ่ายการปฏิบัติหน้าที่"]
+      },
+      {
+        id: "9",
+        catKey: "guard",
+        category: "หมวดที่ 8-9: กิจกรรมเวร",
+        title: "การปฏิบัติหน้าที่เวรประจำจุดตามคำสั่งวิทยาลัย",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-shield-cat",
+        tagColor: "purple",
+        summary: "ดูแลความปลอดภัยประจำจุด อาคารเรียน และพื้นที่เสี่ยงภายในวิทยาลัย",
+        details: "กวดขันความปลอดภัย ตรวจตราอาคารปฏิบัติการ 542 และพื้นที่รับผิดชอบ เพื่อป้องกันอุบัติเหตุและดูแลรักษาทรัพย์สินของทางราชการ",
+        evidence: ["คำสั่งเวรประจำจุดอาคารสถานที่", "บันทึกการตรวจตราความปลอดภัยประจำวัน", "ภาพถ่ายการเดินตรวจจุดเสี่ยง"]
+      },
+
+      // หมวด 10-16: การจัดการเรียนการสอน (10 - 16)
+      {
+        id: "10",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การจัดทำและส่งแผนการจัดการเรียนรู้ 100%",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-book-open-reader",
+        tagColor: "teal",
+        summary: "ส่งแผนการจัดการเรียนรู้มุ่งเน้นสมรรถนะและบูรณาการดิจิทัล ครบถ้วนตรงเวลา",
+        details: "วิเคราะห์หลักสูตรรายวิชา จัดทำแผนการจัดการเรียนรู้มุ่งเน้นสมรรถนะอาชีพ (Competency-based) บูรณาการเทคโนโลยี AI และการเขียนโปรแกรม ผ่านการอนุมัติจากฝ่ายวิชาการ 100%",
+        evidence: ["รูปเล่มแผนการจัดการเรียนรู้ที่ผ่านการอนุมัติ", "อนุมัติการส่งแผนจากงานพัฒนาหลักสูตรฯ", "ตารางวิเคราะห์หลักสูตรรายวิชา"]
+      },
+      {
+        id: "11",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การพัฒนาสื่อ Active / Blended Learning / VS Code Lab",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-code",
+        tagColor: "teal",
+        summary: "สร้างสื่อดิจิทัล โค้ดดิ้งเวิร์กช็อป และแพลตฟอร์มการเรียนรู้ผสมผสาน",
+        details: "พัฒนาสื่อการสอนดิจิทัล สื่อวิดีโอสอนเขียนโปรแกรม และการใช้ VS Code Live Share สำหรับทำ Interactive Coding Lab ช่วยให้นักเรียนฝึกเขียนโค้ดและเห็นผลลัพธ์แบบ Real-time",
+        evidence: ["สื่อการสอนออนไลน์และสไลด์การสอน Interactive", "ลิงก์ Repository และเครื่องมือ VS Code Lab", "รูปภาพบรรยากาศการเรียนแบบ Active Learning"]
+      },
+      {
+        id: "12",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การจัดทำรายงานผลการประเมินการจัดการเรียนรู้",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-chart-pie",
+        tagColor: "teal",
+        summary: "ประเมินผลสัมฤทธิ์ทางการเรียนและรายงานผลการเรียนรู้รายสัปดาห์",
+        details: "รวบรวมข้อมูลคะแนนเก็บ คะแนนสอบวัดผล นำมาวิเคราะห์ผลสัมฤทธิ์ทางการเรียนของผู้เรียนเพื่อนำไปปรับปรุงเทคนิคการสอนให้เหมาะสมยิ่งขึ้น",
+        evidence: ["เอกสารรายงานผลสัมฤทธิ์ทางการเรียนรายวิชา", "กราฟเปรียบเทียบผลการเรียนก่อน-หลังเรียน", "แบบประเมินความพึงพอใจของผู้เรียน"]
+      },
+      {
+        id: "13",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การบันทึกหลังการสอนสมบูรณ์และเป็นปัจจุบัน",
+        score: 7,
+        fullScore: 8,
+        icon: "fa-pen-to-square",
+        tagColor: "teal",
+        summary: "บันทึกผลการสอน ปัญหา อุปสรรค และข้อเสนอแนะในทุกคาบเรียน",
+        details: "จดบันทึกหลังสอนทุกครั้งหลังเสร็จสิ้นการสอน ระบุปัญหาของนักเรียนที่ไม่เข้าใจโค้ดดิ้ง พร้อมแนวทางการแก้ปัญหาและการนัดหมายซ่อมเสริม",
+        evidence: ["สมุดบันทึกหลังการสอนประจำรายวิชา", "ภาพถ่ายการสอนซ่อมเสริมแก้นักเรียนกลุ่มช้า", "สรุปข้อเสนอแนะพัฒนาการสอน"]
+      },
+      {
+        id: "14",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การวิเคราะห์ข้อสอบ + ระบบสอบออนไลน์ Anti-cheat",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-laptop-code",
+        tagColor: "teal",
+        summary: "วิเคราะห์ค่าความยากง่าย (p) และค่าอำนาจจำแนก (r) พร้อมพัฒนาระบบสอบป้องกันการทุจริต",
+        details: "พัฒนาระบบสอบวัดผลออนไลน์ที่มีระบบสุ่มข้อสอบ สุ่มตัวเลือก และระบบ Anti-cheat สลับหน้าจอ เพื่อความยุติธรรม พร้อมนำข้อสอบมาหาค่าความยากง่าย (p) และค่าอำนาจจำแนก (r)",
+        evidence: ["รายงานการวิเคราะห์คุณภาพข้อสอบ (p, r, KR-20)", "ภาพหน้าจอสถาปัตยกรรมระบบสอบ Anti-cheat", "คลังข้อสอบมาตรฐานรายวิชา"]
+      },
+      {
+        id: "15",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "การส่งผลการเรียน (Grade) ครบถ้วนตรงเวลาตามกำหนด",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-check-double",
+        tagColor: "teal",
+        summary: "อนุมัติและส่งผลการเรียนเข้าระบบงานทะเบียนตรงเวลา 100%",
+        details: "ประมวลผลคะแนนเก็บ คะแนนจิตพิสัย คะแนนสอบปลายภาค และจัดส่งเกรดเข้าระบบวัดผลของวิทยาลัยตามปฏิทินวิชาการอย่างถูกต้องแม่นยำ",
+        evidence: ["ใบส่งผลการเรียน ปพ. ที่ลงนามสมบูรณ์", "หลักฐานการอนุมัติเกรดในระบบทะเบียน", "บันทึกเวลาการส่งผลการเรียน"]
+      },
+      {
+        id: "16",
+        catKey: "teaching",
+        category: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน",
+        title: "กิจกรรมลูกเสือวิสามัญ วูดแบดจ์ 2 ท่อน (W.B. เลขที่ 517)",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-shield-halved",
+        tagColor: "teal",
+        summary: "ผู้บังคับบัญชาลูกเสือ เครื่องหมายวูดแบดจ์ 2 ท่อน (Wood Badge) เลขที่ 517",
+        details: "ฝึกอบรมและทำหน้าที่ผู้บังคับบัญชาลูกเสือวิสามัญ จัดกิจกรรมเดินทางไกล ค่ายพักแรม และการฝึกระเบียบวินัยลูกเสือ ได้รับเครื่องหมายวูดแบดจ์ 2 ท่อน เลขที่ 517",
+        evidence: ["วุฒิบัตรวูดแบดจ์ 2 ท่อน (W.B.) เลขที่ 517", "คำสั่งการจัดกิจกรรมค่ายลูกเสือวิสามัญ", "ภาพถ่ายการฝึกอบรมกองลูกเสือ"]
+      },
+
+      // หมวด 17-20: บรรยากาศการเรียนและวิชาการ (17 - 20)
+      {
+        id: "17",
+        catKey: "academic",
+        category: "หมวดที่ 17-20: บรรยากาศการเรียนและวิชาการ",
+        title: "การจัดบรรยากาศห้องปฏิบัติการ 542 Digital Business Tech",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-desktop",
+        tagColor: "indigo",
+        summary: "ปรับปรุงห้องปฏิบัติการคอมพิวเตอร์ 542 ให้ทันสมัย สวยงาม ปลอดภัย และมีป้ายนวัตกรรม",
+        details: "จัดตกแต่งห้องปฏิบัติการ 542 แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล ให้มีบรรยากาศเทคโนโลยี Smart Classroom ปรับปรุงสายสัญญาณไฟฟ้า เครือข่าย และป้ายความรู้ทางโค้ดดิ้ง",
+        evidence: ["ภาพถ่ายสภาพแวดล้อมห้องปฏิบัติการ 542 ก่อน-หลังปรับปรุง", "ป้ายนิเทศและบอร์ดแสดงผลงานนวัตกรรม", "รายการคุรุภัณฑ์คอมพิวเตอร์พร้อมใช้งาน"]
+      },
+      {
+        id: "18",
+        catKey: "academic",
+        category: "หมวดที่ 17-20: บรรยากาศการเรียนและวิชาการ",
+        title: "การเข้าร่วมกิจกรรม PLC แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล",
+        score: 7,
+        fullScore: 8,
+        icon: "fa-comments-dollar",
+        tagColor: "indigo",
+        summary: "ร่วมแลกเปลี่ยนเรียนรู้ทางวิชาชีพ (PLC) เพื่อแก้ปัญหาการเรียนเขียนโปรแกรม",
+        details: "เข้าร่วมกลุ่ม PLC ของแผนกวิชาเพื่อร่วมกันวิเคราะห์ปัญหาเด็กเรียนไม่เข้าใจโครงสร้างเงื่อนไขและลูปในภาษาโปรแกรม พร้อมร่วมออกแบบนวัตกรรมการสอนร่วมกับครูในแผนก",
+        evidence: ["แบบบันทึกการจัดกิจกรรม PLC แผนกวิชา", "ภาพถ่ายการประชุมและแลกเปลี่ยนเรียนรู้", "นวัตกรรม/สื่อที่ได้จากการทำ PLC"]
+      },
+      {
+        id: "19",
+        catKey: "academic",
+        category: "หมวดที่ 17-20: บรรยากาศการเรียนและวิชาการ",
+        title: "งานวิจัยในชั้นเรียน 5 บท เรื่อง CBL เขียนโปรแกรม ปวส.",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-microscope",
+        tagColor: "indigo",
+        summary: "จัดทำวิจัยการจัดการเรียนรู้แบบ Challenge-Based Learning (CBL) พัฒนาทักษะโค้ดดิ้ง",
+        details: "จัดทำวิจัยในชั้นเรียนฉบับสมบูรณ์ 5 บท เรื่อง 'การพัฒนาทักษะการเขียนโปรแกรมของนักศึกษาระดับชั้น ปวส. โดยใช้วิธีการจัดการเรียนรู้แบบใช้ท้าทายเป็นฐาน (Challenge-Based Learning: CBL)'",
+        evidence: ["รูปเล่มรายงานการวิจัยในชั้นเรียนฉบับสมบูรณ์ 5 บท", "เครื่องมือวิจัยและแบบทดสอบวัดผลสัมฤทธิ์", "ค่าสถิติการวิเคราะห์การทดลอง (t-test)"]
+      },
+      {
+        id: "20",
+        catKey: "academic",
+        category: "หมวดที่ 17-20: บรรยากาศการเรียนและวิชาการ",
+        title: "การส่งเอกสาร สผ.1 และ สผ.2 ครบถ้วนตามระเบียบ",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-folder-closed",
+        tagColor: "indigo",
+        summary: "จัดทำและส่งแบบสรุปการจัดการเรียนการสอน สผ.1 และ สผ.2 ตามกรอบเวลา",
+        details: "รวบรวมและจัดส่งเอกสารรายงานผลการปฏิบัติงาน สผ.1 และ สผ.2 เสนอต่อหัวหน้าแผนกวิชาและฝ่ายวิชาการอย่างถูกต้อง ครบถ้วน สมบูรณ์",
+        evidence: ["เอกสาร สผ.1 และ สผ.2 ที่ได้รับการอนุมัติ", "หลักฐานการส่งมอบเอกสารงานวิชาการ"]
+      },
+
+      // หมวด 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง (21 - 26)
+      {
+        id: "21",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "การร่วมกิจกรรมชาติ ศาสนา พระมหากษัตริย์",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-monument",
+        tagColor: "rose",
+        summary: "เข้าร่วมพิธีสำคัญทางราชการ วันเฉลิมพระชนมพรรษา และวันสำคัญทางศาสนา 100%",
+        details: "แต่งกายถูกต้องตามระเบียบและเข้าร่วมพิธีวางพานพุ่ม พิธีทำบุญตักบาตร และกิจกรรมเฉลิมพระเกียรติเนื่องในวันสำคัญของชาติและสถานศึกษา",
+        evidence: ["ภาพถ่ายการเข้าร่วมพิธีการสำคัญของวิทยาลัย", "สมุดลงชื่อเข้าร่วมกิจกรรมองค์กร"]
+      },
+      {
+        id: "22",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "วิทยากรภายนอก (อบต.ราม & วิทยาลัยเทคนิคสุรินทร์)",
+        score: 7,
+        fullScore: 8,
+        icon: "fa-chalkboard-user",
+        tagColor: "rose",
+        summary: "ได้รับเชิญเป็นวิทยากรบรรยายด้านการตลาดดิจิทัลและ AI เพื่อการทำงาน",
+        details: "ได้รับการหนังสือเชิญเป็นวิทยากรบรรยายให้ความรู้แก่บุคลากร อบต.ราม และนักศึกษาวิทยาลัยเทคนิคสุรินทร์ ในหัวข้อ 'การประยุกต์ใช้ AI และ Digital Content ในยุค 2026'",
+        evidence: ["หนังสือขอความอนุเคราะห์วิทยากรจาก อบต.ราม", "หนังสือเชิญวิทยากรจากวิทยาลัยเทคนิคสุรินทร์", "เกียรติบัตรวิทยากรและภาพบรรยากาศการบรรยาย"]
+      },
+      {
+        id: "23",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "วิทยากรพัฒนาชุมชน (อบต.คอโค)",
+        score: 7,
+        fullScore: 8,
+        icon: "fa-handshake-angle",
+        tagColor: "rose",
+        summary: "เป็นวิทยากรฝึกอบรมการสร้างรายได้ด้วยสินค้าออนไลน์ให้แก่กลุ่มแม่บ้าน อบต.คอโค",
+        details: "ถ่ายทอดความรู้และบริการวิชาการแก่ชุมชนท้องถิ่น จัดเวิร์กช็อปสอนการถ่ายภาพสินค้าและการทำการตลาดบนโซเชียลมีเดียแก่กลุ่มวิสาหกิจชุมชน อบต.คอโค",
+        evidence: ["หนังสือเชิญวิทยากรพัฒนาชุมชน อบต.คอโค", "ภาพถ่ายการอบรมเชิงปฏิบัติการให้แก่ชาวบ้าน", "แบบประเมินความพึงพอใจของชุมชน"]
+      },
+      {
+        id: "24",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "สถิติการปฏิบัติงาน ไม่ขาด ไม่ลา ไม่สาย 100%",
+        score: 10,
+        fullScore: 10,
+        icon: "fa-calendar-check",
+        tagColor: "rose",
+        summary: "อุทิศเวลาให้แก่ราชการ มีวินัย ความรับผิดชอบ และสถิติการมาทำงาน 100%",
+        details: "ปฏิบัติราชการด้วยความซื่อสัตย์ สุจริต ตรงต่อเวลา โดยตลอดรอบการประเมิน 1 เมษายน - 30 กันยายน 2569 มีสถิติ ไม่ขาด ไม่ลา และไม่มาสาย",
+        evidence: ["ใบสรุปวันมาปฏิบัติราชการจากงานบุคลากร", "สมุดลงเวลาสแกนลายนิ้วมือ/ใบหน้าของวิทยาลัย"]
+      },
+      {
+        id: "25",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "การจัดทำและดำเนินการตามแผนพัฒนาตนเอง ID-Plan 100%",
+        score: 8,
+        fullScore: 8,
+        icon: "fa-id-card",
+        tagColor: "rose",
+        summary: "จัดทำแผน ID-Plan และเข้าร่วมการอบรมทางวิชาชีพเกิน 20 ชั่วโมง/ปี",
+        details: "วางแผนพัฒนาตนเอง (Individual Development Plan) และเข้าร่วมการอบรมสัมมนาทางเทคโนโลยี AI, Coding, และการจัดการเรียนรู้ รวมกว่า 40 ชั่วโมงในรอบการประเมิน",
+        evidence: ["เล่มแผนพัฒนาตนเอง ID-Plan ที่ผ่านการอนุมัติ", "วุฒิบัตรการผ่านการอบรมพัฒนาตนเองรวม 5 ใบ"]
+      },
+      {
+        id: "26",
+        catKey: "development",
+        category: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง",
+        title: "การปฏิบัติหน้าที่ตามคำสั่งสถานศึกษาอย่างทุ่มเท",
+        score: 21,
+        fullScore: 30,
+        icon: "fa-hand-holding-heart",
+        tagColor: "rose",
+        summary: "สนองนโยบายวิทยาลัย ปฏิบัติภารกิจตามคำสั่งแต่งตั้งครบถ้วนทุกประการ",
+        details: "ปฏิบัติหน้าที่ตามที่ได้รับมอบหมายจากผู้บริหารสถานศึกษา คณะกรรมการดำเนินงานฝ่ายต่างๆ ด้วยความเต็มใจ ทุ่มเท เสียสละเวลาส่วนตัวเพื่อประโยชน์ของสถานศึกษา",
+        evidence: ["แฟ้มรวบรวมคำสั่งวิทยาลัยอาชีวศึกษาสุรินทร์ที่ได้รับมอบหมาย", "ภาพถ่ายการปฏิบัติภารกิจพิเศษของวิทยาลัย"]
+      }
+    ];
+
+    // Main App State
+    let currentFilter = 'all';
+
+    // On DOM Load
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      renderIndicators();
+      renderSummaryTable();
+      initCharts();
+    });
+
+    // Theme Switcher
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      // Re-render charts for theme compatibility
+      initCharts();
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        document.documentElement.classList.add('dark');
+      }
+    }
+
+    // Category Filter Setter
+    function setFilter(catKey) {
+      currentFilter = catKey;
+      
+      // Update UI buttons
+      document.querySelectorAll('#filterTabs button').forEach(btn => {
+        btn.classList.remove('bg-sky-600', 'text-white', 'shadow-md', 'shadow-sky-500/20');
+        btn.classList.add('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+      });
+
+      event.currentTarget.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+      event.currentTarget.classList.add('bg-sky-600', 'text-white', 'shadow-md', 'shadow-sky-500/20');
+
+      renderIndicators();
+    }
+
+    // Filter Indicators with Search Keyword
+    function filterIndicators() {
+      renderIndicators();
+    }
+
+    // Render Indicator Cards
+    function renderIndicators() {
+      const container = document.getElementById('indicatorsContainer');
+      const searchKeyword = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      const filtered = indicatorsData.filter(item => {
+        const matchesCategory = (currentFilter === 'all') || (item.catKey === currentFilter);
+        const matchesSearch = item.title.toLowerCase().includes(searchKeyword) || 
+                              item.id.toLowerCase().includes(searchKeyword) ||
+                              item.summary.toLowerCase().includes(searchKeyword) ||
+                              item.category.toLowerCase().includes(searchKeyword);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400">
+            <i class="fa-solid fa-folder-open text-4xl mb-3"></i>
+            <p class="text-sm">ไม่พบข้อมูลตัวชี้วัดที่ตรงกับเงื่อนไขการค้นหา</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const pct = Math.round((item.score / item.fullScore) * 100);
+        const isFull = item.score === item.fullScore;
+
+        return `
+          <div class="glass-card rounded-2xl p-5 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group border hover:border-sky-500/50">
+            <div>
+              <!-- Top Badge & Score -->
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                  ตัวชี้วัด ${item.id}
+                </span>
+                <div class="flex items-center gap-1.5 text-xs font-bold">
+                  <span class="text-sky-600 dark:text-sky-400 text-sm">${item.score}</span>
+                  <span class="text-slate-400">/ ${item.fullScore} คะแนน</span>
+                </div>
+              </div>
+
+              <!-- Title & Icon -->
+              <div class="flex items-start gap-3 my-2">
+                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-sky-500 flex items-center justify-center text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <i class="fa-solid ${item.icon}"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
+                    ${item.title}
+                  </h4>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${item.category}</p>
+                </div>
+              </div>
+
+              <!-- Summary Text -->
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-2 line-clamp-2 leading-relaxed">
+                ${item.summary}
+              </p>
+            </div>
+
+            <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/80">
+              <!-- Progress Bar -->
+              <div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2 overflow-hidden mb-3">
+                <div class="bg-gradient-to-r from-sky-500 to-emerald-400 h-full rounded-full" style="width: ${pct}%"></div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-medium ${isFull ? 'text-emerald-500' : 'text-amber-500'}">
+                  <i class="fa-solid ${isFull ? 'fa-circle-check' : 'fa-circle-exclamation'} mr-1"></i>
+                  ${isFull ? 'คะแนนเต็ม (100%)' : `คิดเป็น ${pct}%`}
+                </span>
+
+                <button onclick="openModal('${item.id}')" class="text-xs font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 flex items-center gap-1 group-hover:underline">
+                  รายละเอียด <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Modal Details Opener
+    function openModal(id) {
+      const item = indicatorsData.find(x => x.id === id);
+      if (!item) return;
+
+      const modal = document.getElementById('indicatorModal');
+      const content = document.getElementById('modalContent');
+      const body = document.getElementById('modalBody');
+
+      const pct = Math.round((item.score / item.fullScore) * 100);
+
+      body.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl">
+            <i class="fa-solid ${item.icon}"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-sky-500 uppercase tracking-wider">${item.category}</span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">ตัวชี้วัด ${item.id}: ${item.title}</h3>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-100 dark:bg-slate-900 p-4 rounded-2xl">
+          <div>
+            <p class="text-[11px] text-slate-500">คะแนนเต็ม</p>
+            <p class="text-base font-bold text-slate-800 dark:text-slate-200">${item.fullScore} คะแนน</p>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-500">คะแนนประเมินตนเอง</p>
+            <p class="text-base font-bold text-sky-600 dark:text-sky-400">${item.score} คะแนน</p>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-500">ร้อยละความสำเร็จ</p>
+            <p class="text-base font-bold text-emerald-500">${pct}%</p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">รายละเอียดการดำเนินงาน</h4>
+          <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+            ${item.details}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">หลักฐานและร่องรอยประกอบการประเมิน</h4>
+          <ul class="space-y-2">
+            ${item.evidence.map(ev => `
+              <li class="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
+                <i class="fa-solid fa-file-circle-check text-sky-500 mt-0.5"></i>
+                <span>${ev}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      content.classList.remove('scale-95');
+      content.classList.add('scale-100');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('indicatorModal');
+      const content = document.getElementById('modalContent');
+
+      content.classList.remove('scale-100');
+      content.classList.add('scale-95');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // Close modal on clicking backdrop
+    document.getElementById('indicatorModal').addEventListener('click', (e) => {
+      if (e.target.id === 'indicatorModal') closeModal();
+    });
+
+    // Render Category Summary Comparison Table
+    function renderSummaryTable() {
+      const categories = [
+        { name: "หมวดที่ 1: สิ่งประดิษฐ์/นวัตกรรม/แข่งขันทักษะ", count: 3, max: 32, score: 29 },
+        { name: "หมวดที่ 2: หน้าที่พิเศษ (ศูนย์ดิจิทัล, วัดผล, วิทยาบริการ)", count: 3, max: 30, score: 30 },
+        { name: "หมวดที่ 3-7: การดูแลช่วยเหลือผู้เรียน (เสาธง, เยี่ยมบ้าน, SDQ, คัดกรอง)", count: 5, max: 40, score: 40 },
+        { name: "หมวดที่ 8-9: กิจกรรมเวร (เวรประตู, เวรประจำจุด)", count: 2, max: 16, score: 15 },
+        { name: "หมวดที่ 10-16: ด้านการจัดการเรียนการสอน (แผน, สื่อ, สอบ, เกรด, ลูกเสือ W.B.)", count: 7, max: 64, score: 63 },
+        { name: "หมวดที่ 17-20: บรรยากาศการเรียนและวิชาการ (ห้อง 542, PLC, วิจัย CBL, สผ.)", count: 4, max: 36, score: 35 },
+        { name: "หมวดที่ 21-26: การเข้าร่วมกิจกรรมและพัฒนาตนเอง (วิทยากร, ไม่ขาด/ลา/สาย, ID-Plan)", count: 6, max: 77, score: 61 }
+      ];
+
+      const tbody = document.getElementById('summaryTableBody');
+      tbody.innerHTML = categories.map(cat => {
+        const pct = ((cat.score / cat.max) * 100).toFixed(2);
+        return `
+          <tr class="hover:bg-slate-100/50 dark:hover:bg-slate-900/50 transition-colors text-xs sm:text-sm">
+            <td class="py-3 px-4 font-medium text-slate-800 dark:text-slate-200">${cat.name}</td>
+            <td class="py-3 px-4 text-center text-slate-500">${cat.count}</td>
+            <td class="py-3 px-4 text-center font-semibold text-slate-700 dark:text-slate-300">${cat.max}</td>
+            <td class="py-3 px-4 text-center font-bold text-sky-600 dark:text-sky-400">${cat.score}</td>
+            <td class="py-3 px-4 text-center font-semibold text-emerald-600 dark:text-emerald-400">${pct}%</td>
+            <td class="py-3 px-4 text-center">
+              <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                ดีเยี่ยม
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Chart.js Configuration
+    let radarChartInstance = null;
+    let barChartInstance = null;
+
+    function initCharts() {
+      const isDark = document.documentElement.classList.contains('dark');
+      const textColor = isDark ? '#cbd5e1' : '#334155';
+      const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
+
+      // 1. Radar Chart
+      const ctxRadar = document.getElementById('competencyRadarChart').getContext('2d');
+      if (radarChartInstance) radarChartInstance.destroy();
+
+      radarChartInstance = new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+          labels: [
+            'งานสอน & สื่อดิจิทัล',
+            'นวัตกรรม & สิ่งประดิษฐ์',
+            'หน้าที่พิเศษองค์กร',
+            'การดูแลช่วยเหลือผู้เรียน',
+            'วิจัย & วิชาการ',
+            'การพัฒนาตนเอง & จิตอาสา'
+          ],
+          datasets: [{
+            label: 'ร้อยละความสำเร็จ (%)',
+            data: [98.4, 90.6, 100, 100, 97.2, 85.0],
+            backgroundColor: 'rgba(14, 165, 233, 0.25)',
+            borderColor: '#0284c7',
+            pointBackgroundColor: '#00d2ff',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#0284c7',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: textColor, font: { family: 'Prompt', size: 12 } }
+            }
+          },
+          scales: {
+            r: {
+              angleLines: { color: gridColor },
+              grid: { color: gridColor },
+              pointLabels: { color: textColor, font: { family: 'Prompt', size: 11 } },
+              ticks: { backdropColor: 'transparent', color: textColor },
+              min: 0,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // 2. Bar Chart
+      const ctxBar = document.getElementById('categoryBarChart').getContext('2d');
+      if (barChartInstance) barChartInstance.destroy();
+
+      barChartInstance = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: ['หมวด 1', 'หมวด 2', 'หมวด 3-7', 'หมวด 8-9', 'หมวด 10-16', 'หมวด 17-20', 'หมวด 21-26'],
+          datasets: [
+            {
+              label: 'คะแนนเต็ม',
+              data: [32, 30, 40, 16, 64, 36, 77],
+              backgroundColor: isDark ? 'rgba(148, 163, 184, 0.3)' : 'rgba(203, 213, 225, 0.8)',
+              borderRadius: 6
+            },
+            {
+              label: 'คะแนนประเมินได้',
+              data: [29, 30, 40, 15, 63, 35, 61],
+              backgroundColor: '#0284c7',
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: textColor, font: { family: 'Prompt', size: 12 } }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: textColor, font: { family: 'Prompt', size: 11 } },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: textColor, font: { family: 'Prompt', size: 11 } },
+              grid: { color: gridColor }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
