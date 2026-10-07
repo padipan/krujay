@@ -1,0 +1,593 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>เครื่องทำซับคาราโอเกะ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&display=swap">
+<style>
+/* Layout: two columns (audio + lyrics | stage + tap button), then full-width word timeline and export. Stage is always a dark "screen". */
+:root{
+  --bg:#EDEFF5; --surface:#F8F9FC; --fg:#171B33; --muted:#59607F; --line:#C9CEE2;
+  --accent:#D81E5B; --accent-fg:#FFFFFF; --accent-soft:#FADCE7; --field:#FFFFFF;
+  --stage:#0F1126; --stage-line:#262B52;
+  --sung:#ff5c8a; --unsung:#ffffff;
+  --display:'Mitr','IBM Plex Sans Thai','Noto Sans Thai',Tahoma,sans-serif;
+  --body:'IBM Plex Sans Thai','Noto Sans Thai',Tahoma,system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B0D1B; --surface:#141733; --fg:#E8EAF6; --muted:#9AA1C6; --line:#2B3058;
+    --accent:#FF5C8A; --accent-fg:#1B0A12; --accent-soft:#3B1429; --field:#0E1027;
+    --stage:#070816; --stage-line:#23284F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B0D1B; --surface:#141733; --fg:#E8EAF6; --muted:#9AA1C6; --line:#2B3058;
+  --accent:#FF5C8A; --accent-fg:#1B0A12; --accent-soft:#3B1429; --field:#0E1027;
+  --stage:#070816; --stage-line:#23284F; color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:20px 48px}
+*{box-sizing:border-box}
+.app{max-width:1180px;margin-inline:auto;display:flex;flex-direction:column;gap:16px}
+h1,h2{font-family:var(--display);font-weight:500;margin:0;text-wrap:balance}
+h1{font-size:clamp(24px,4vw,34px);line-height:1.2}
+h2{font-size:18px;display:flex;align-items:center;gap:10px}
+.n{font-family:var(--mono);font-size:12px;font-weight:500;width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;background:var(--accent);color:var(--accent-fg)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px 24px}
+.sub{margin:4px 0 0;color:var(--muted);max-width:60ch}
+.keys{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;background:var(--surface);color:var(--fg)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (min-width:900px){.cols{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hint{font-size:13px;color:var(--muted);margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:var(--field);border-radius:7px;padding:6px 12px;cursor:pointer;line-height:1.4}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:500}
+.btn.sm{padding:3px 9px;font-size:13px}
+.btn[aria-pressed="true"],.tab[aria-selected="true"]{background:var(--accent-soft);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.dz{display:flex;flex-direction:column;gap:4px;border:2px dashed var(--line);border-radius:10px;padding:16px;cursor:pointer;background:var(--field)}
+.dz.over,.dz:hover{border-color:var(--accent)}
+.dz input{position:absolute;opacity:0;width:1px;height:1px}
+.dz:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.dz strong{font-weight:600}
+.status{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+textarea{width:100%;min-height:190px;resize:vertical;background:var(--field);border:1px solid var(--line);border-radius:8px;padding:10px 12px;line-height:1.7}
+input[type=text],input[type=number]{background:var(--field);border:1px solid var(--line);border-radius:7px;padding:5px 8px;min-width:0}
+input[type=number]{width:72px;font-family:var(--mono)}
+input[type=color]{width:38px;height:30px;border:1px solid var(--line);border-radius:6px;padding:2px;background:var(--field)}
+label.f{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.stage{container-type:inline-size;aspect-ratio:16/9;max-width:100%;background:radial-gradient(120% 90% at 50% 0%,#1B1F4A 0%,var(--stage) 60%);border:1px solid var(--stage-line);border-radius:10px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2.2cqw;padding:3cqw;overflow:hidden}
+.srow{text-align:center;font-family:var(--display);line-height:1.55;white-space:pre-wrap;max-width:100%}
+.srow.a{font-size:5.4cqw}
+.srow.b{font-size:3.6cqw;opacity:.55;color:var(--unsung)}
+.srow.empty{font-size:3.4cqw;color:#9AA1C6;opacity:1}
+.w{white-space:pre-wrap;background:linear-gradient(90deg,var(--sung) calc(var(--p,0) * 1%),var(--unsung) calc(var(--p,0) * 1%));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.transport{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px}
+.transport input[type=range]{width:100%;accent-color:var(--accent)}
+.time{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ico{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--field);display:grid;place-items:center;cursor:pointer}
+.ico:hover{border-color:var(--accent)}
+.ico svg{width:16px;height:16px;fill:currentColor}
+.tap{width:100%;border:0;border-radius:12px;background:var(--accent);color:var(--accent-fg);padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tap:active{transform:translateY(1px);filter:brightness(1.08)}
+.tap-main{font-family:var(--display);font-size:26px;line-height:1.2}
+.tap-next{font-size:14px;opacity:.9;overflow-wrap:anywhere}
+.tl{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--field);padding:10px;position:relative;display:flex;flex-direction:column;gap:10px}
+.line{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:start}
+.ln{font-family:var(--mono);font-size:11px;color:var(--muted);padding-top:8px;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.chip{display:inline-flex;flex-direction:column;align-items:flex-start;gap:0;padding:4px 10px;border:1px dashed var(--line);border-radius:6px;background:transparent;color:var(--fg);cursor:pointer;min-width:0;text-align:left}
+.chip .cm{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.chip.done{border-style:solid;border-color:var(--accent);background:var(--accent-soft)}
+.chip.cur{background:var(--accent);border-style:solid;border-color:var(--accent);color:var(--accent-fg)}
+.chip.cur .cm{color:inherit;opacity:.85}
+.chip.sel{outline:2px solid var(--fg);outline-offset:1px}
+.chip.live{box-shadow:0 0 0 3px var(--accent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.out{min-height:220px;font-family:var(--mono);font-size:12.5px;line-height:1.55;white-space:pre;overflow:auto}
+.sample{font-size:13px;color:var(--accent);margin:0}
+.grid-set{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
+.grid-set label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+.grid-set input[type=text],.grid-set input[type=number]{width:100%}
+.toast{font-size:13px;color:var(--muted);min-height:1.4em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<main class="app" lang="th">
+  <header class="top">
+    <div>
+      <h1>เครื่องทำซับคาราโอเกะ</h1>
+      <p class="sub">โหลดเพลง วางเนื้อ แตะตามจังหวะทีละคำ แล้วส่งออกเป็นไฟล์ซับแบบ ASS, LRC หรือ SRT</p>
+    </div>
+    <div class="keys" aria-label="คีย์ลัด">
+      <span><kbd>Space</kbd> เริ่มคำ</span>
+      <span><kbd>Enter</kbd> จบคำ</span>
+      <span><kbd>⌫</kbd> ย้อน</span>
+      <span><kbd>←</kbd><kbd>→</kbd> ข้าม 3 วิ</span>
+      <span><kbd>P</kbd> เล่น/หยุด</span>
+    </div>
+  </header>
+
+  <div class="cols">
+    <div class="col">
+      <section class="panel" id="s-audio">
+        <h2><span class="n">1</span>เสียง</h2>
+        <label class="dz" id="dz">
+          <input type="file" id="file" accept="audio/*">
+          <strong>ลากไฟล์เสียงมาวางที่นี่ หรือกดเพื่อเลือก</strong>
+          <span class="status" id="audioStatus">ยังไม่มีไฟล์ ใช้นาฬิกาจำลองเพื่อลองทำก่อนได้</span>
+        </label>
+        <audio id="au" preload="auto"></audio>
+      </section>
+
+      <section class="panel" id="s-lyrics">
+        <h2><span class="n">2</span>เนื้อเพลง</h2>
+        <textarea id="lyrics" spellcheck="false" aria-label="เนื้อเพลง"></textarea>
+        <p class="hint">หนึ่งบรรทัด = หนึ่งบรรทัดบนจอ ระบบตัดคำไทยให้เอง ถ้าอยากแบ่งเองให้ใส่ <kbd>/</kbd> เช่น ดวง/จันทร์/ส่อง/แสง</p>
+        <p class="sample" id="sampleNote" hidden>เนื้อเพลงตัวอย่างที่แต่งขึ้นเอง แทนที่ด้วยเพลงของคุณได้เลย</p>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="panel" id="s-sync">
+        <h2><span class="n">3</span>แตะซิงก์</h2>
+        <div class="stage" id="stage" aria-label="ตัวอย่างซับ"></div>
+        <div class="transport">
+          <button class="ico" id="play" aria-label="เล่นหรือหยุด"></button>
+          <input type="range" id="seek" min="0" max="90" step="0.01" value="0" aria-label="ตำแหน่งเพลง">
+          <span class="time" id="clockTxt">0:00.0 / 1:30.0</span>
+        </div>
+        <div class="row">
+          <label class="f">ความเร็ว
+            <select id="rate">
+              <option value="0.5">0.5×</option>
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+            </select>
+          </label>
+          <label class="f">ชดเชยหน่วงนิ้ว <input type="number" id="offset" value="120" min="0" max="600" step="10"> ms</label>
+        </div>
+        <button class="tap" id="tap" type="button">
+          <span class="tap-main">แตะ</span>
+          <span class="tap-next" id="tapNext">คำถัดไป: -</span>
+        </button>
+        <div class="row">
+          <button class="btn sm" id="undo" type="button">ย้อนกลับหนึ่งคำ</button>
+          <button class="btn sm" id="endBtn" type="button">จบคำล่าสุด</button>
+          <span class="status" id="progress"></span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" id="s-timeline">
+    <h2>คำและเวลา</h2>
+    <div class="row">
+      <button class="btn sm" id="rough" type="button">เติมเวลาคร่าว ๆ ให้คำที่ยังว่าง</button>
+      <button class="btn sm" id="clear" type="button">ล้างเวลาทั้งหมด</button>
+      <span class="status">กดที่คำเพื่อเลือก แล้วปรับเวลาละเอียด</span>
+      <span class="row" style="margin-left:auto">
+        <span class="status" id="selInfo">ยังไม่ได้เลือกคำ</span>
+        <button class="btn sm" id="nm" type="button" aria-label="เลื่อนเร็วขึ้น 0.05 วินาที">−0.05</button>
+        <button class="btn sm" id="np" type="button" aria-label="เลื่อนช้าลง 0.05 วินาที">+0.05</button>
+      </span>
+    </div>
+    <div class="tl" id="tl"></div>
+  </section>
+
+  <section class="panel" id="s-export">
+    <h2><span class="n">4</span>ส่งออก</h2>
+    <div class="grid-set">
+      <label>ชื่อไฟล์<input type="text" id="name" value="my-karaoke"></label>
+      <label>ฟอนต์ (ASS)<input type="text" id="font" value="Tahoma"></label>
+      <label>ขนาดฟอนต์<input type="number" id="size" value="72" min="20" max="200"></label>
+      <label>แสดงก่อนร้อง (วินาที)<input type="number" id="lead" value="0.6" min="0" max="3" step="0.1"></label>
+      <label>สีคำที่ร้องแล้ว<input type="color" id="csung" value="#ff5c8a"></label>
+      <label>สีคำที่ยังไม่ร้อง<input type="color" id="cunsung" value="#ffffff"></label>
+    </div>
+    <div class="tabs" role="tablist" aria-label="รูปแบบไฟล์">
+      <button class="btn tab" role="tab" data-fmt="ass" aria-selected="true">ASS · ไฮไลต์ทีละคำ</button>
+      <button class="btn tab" role="tab" data-fmt="lrc" aria-selected="false">LRC · ทีละคำ</button>
+      <button class="btn tab" role="tab" data-fmt="srt" aria-selected="false">SRT · ทีละบรรทัด</button>
+    </div>
+    <textarea class="out" id="out" readonly aria-label="ผลลัพธ์"></textarea>
+    <div class="row">
+      <button class="btn primary" id="copy" type="button">คัดลอก</button>
+      <button class="btn" id="save" type="button" hidden>บันทึกไฟล์</button>
+      <span class="toast" id="toast" role="status"></span>
+    </div>
+    <p class="hint" id="saveHint" hidden>ไฟล์จะถูกบันทึกเป็น .txt ให้เปลี่ยนนามสกุลเป็น .ass, .lrc หรือ .srt ก่อนนำไปใช้ใน VLC, Aegisub หรือเครื่องเล่นคาราโอเกะ</p>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s);};
+var SAMPLE='ตื่นมาเช้านี้ ฟ้าสีส้มทอง\nรถไฟฟ้าเคลื่อน ผ่านเมืองที่ฉันรัก\nเสียงหัวเราะ ดังก้องในซอย\nวันใหม่เริ่มต้น ด้วยรอยยิ้มของเธอ';
+var KEY='karaoke-sub-v1';
+var au=$('#au'),ta=$('#lyrics'),stage=$('#stage'),tl=$('#tl'),out=$('#out');
+var seg=(typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('th',{granularity:'word'}):null;
+
+var lines=[],cur=0,sel=-1,shown=-2,fmtNow='ass',url=null,seeking=false,chipEls=[],liveIdx=-1,lastCur=-1;
+var st={name:'my-karaoke',font:'Tahoma',size:72,sung:'#ff5c8a',unsung:'#ffffff',lead:0.6,offset:120};
+
+var clock={
+  virt:true,t0:0,startedAt:0,playing:false,rate:1,dur:90,
+  time:function(){
+    if(!this.virt)return au.currentTime||0;
+    if(!this.playing)return this.t0;
+    var t=this.t0+(performance.now()-this.startedAt)/1000*this.rate;
+    if(t>=this.dur){this.t0=this.dur;this.playing=false;return this.dur;}
+    return t;
+  },
+  isPlaying:function(){return this.virt?this.playing:(!au.paused&&!au.ended);},
+  play:function(){
+    if(this.virt){if(this.playing)return;if(this.t0>=this.dur)this.t0=0;this.startedAt=performance.now();this.playing=true;}
+    else{var p=au.play();if(p&&p.catch)p.catch(function(){});}
+  },
+  pause:function(){if(this.virt){this.t0=this.time();this.playing=false;}else au.pause();},
+  seek:function(s){s=Math.max(0,s);if(this.virt){this.t0=Math.min(s,this.dur);this.startedAt=performance.now();}else au.currentTime=s;},
+  setRate:function(r){if(this.virt){var t=this.time();this.rate=r;this.t0=t;this.startedAt=performance.now();}else{au.playbackRate=r;this.rate=r;}},
+  duration:function(){return this.virt?this.dur:(isFinite(au.duration)?au.duration:0);}
+};
+
+/* ---------- helpers ---------- */
+function r2(x){return Math.round(x*100)/100;}
+function pad(n,w){n=String(n);while(n.length<(w||2))n='0'+n;return n;}
+function tstr(s){var d=Math.round(Math.max(0,s)*10),m=Math.floor(d/600),r=(d%600)/10;return m+':'+(r<10?'0':'')+r.toFixed(1);}
+function assT(s){var cs=Math.round(Math.max(0,s)*100);return Math.floor(cs/360000)+':'+pad(Math.floor(cs/6000)%60)+':'+pad(Math.floor(cs/100)%60)+'.'+pad(cs%100);}
+function lrcT(s){var cs=Math.round(Math.max(0,s)*100);return pad(Math.floor(cs/6000))+':'+pad(Math.floor(cs/100)%60)+'.'+pad(cs%100);}
+function srtT(s){var ms=Math.round(Math.max(0,s)*1000);return pad(Math.floor(ms/3600000))+':'+pad(Math.floor(ms/60000)%60)+':'+pad(Math.floor(ms/1000)%60)+','+pad(ms%1000,3);}
+function hexAss(h){h=h.replace('#','');return '&H00'+(h.slice(4,6)+h.slice(2,4)+h.slice(0,2)).toUpperCase();}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x));}
+
+/* ---------- tokenizing ---------- */
+function hasThai(s){return /[฀-๿]/.test(s);}
+function tokenize(line){
+  var manual=line.indexOf('/')>=0,parts=line.split(/(\/|\s+)/),toks=[];
+  parts.forEach(function(p){
+    if(!p)return;
+    if(/^\s+$/.test(p)){if(toks.length)toks[toks.length-1].sp=true;return;}
+    if(p==='/')return;
+    if(!manual&&seg&&hasThai(p)){
+      Array.prototype.forEach.call(seg.segment(p),function(s){var t=s.segment;if(t.trim())toks.push({t:t,sp:false,start:null,end:null});});
+    }else toks.push({t:p,sp:false,start:null,end:null});
+  });
+  return toks;
+}
+function rebuild(){
+  var old={};
+  lines.forEach(function(L,li){L.tokens.forEach(function(k,ti){if(k.start!=null)old[li+'|'+ti+'|'+k.t]=[k.start,k.end];});});
+  lines=ta.value.split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean).map(function(s){return {tokens:tokenize(s)};}).filter(function(L){return L.tokens.length;});
+  lines.forEach(function(L,li){L.tokens.forEach(function(k,ti){var o=old[li+'|'+ti+'|'+k.t];if(o){k.start=o[0];k.end=o[1];}});});
+  cur=firstPending();sel=-1;shown=-2;
+  renderAll();
+}
+function flat(){var a=[];lines.forEach(function(L,li){L.tokens.forEach(function(k,ti){a.push({li:li,ti:ti,k:k});});});return a;}
+function firstPending(){var f=flat();for(var i=0;i<f.length;i++)if(f[i].k.start==null)return i;return f.length;}
+
+/* ---------- timing ---------- */
+function nextLineStart(li){for(var i=li+1;i<lines.length;i++){var s=lines[i].tokens[0].start;if(s!=null)return s;}return Infinity;}
+function tokEnd(li,ti){
+  var L=lines[li],k=L.tokens[ti],n=L.tokens[ti+1],nextOk=n&&n.start!=null&&n.start>k.start;
+  if(k.end!=null&&k.end>k.start){var e=k.end;if(nextOk&&n.start<e)e=n.start;return Math.max(k.start+0.05,e);}
+  if(nextOk)return n.start;
+  return Math.max(k.start+0.05,Math.min(k.start+0.8,nextLineStart(li)));
+}
+function stamp(){
+  var f=flat();if(cur>=f.length)return;
+  var t=Math.max(0,clock.time()-st.offset/1000);
+  if(cur>0&&f[cur-1].k.start!=null&&t<=f[cur-1].k.start)t=f[cur-1].k.start+0.02;
+  f[cur].k.start=r2(t);f[cur].k.end=null;
+  sel=cur;cur++;shown=-2;renderAll();
+}
+function markEnd(){
+  var f=flat(),i=cur-1;if(i<0||!f[i]||f[i].k.start==null)return;
+  var e=clock.time()-st.offset/1000;
+  if(e>f[i].k.start+0.05){f[i].k.end=r2(e);renderAll();}
+}
+function undo(){
+  var f=flat();if(cur<=0)return;
+  cur--;var k=f[cur].k,s=k.start;k.start=null;k.end=null;sel=cur;shown=-2;
+  if(s!=null)clock.seek(Math.max(0,s-1.5));
+  renderAll();
+}
+function fillRough(){
+  var f=flat(),last=-1,t;
+  f.forEach(function(x,i){if(x.k.start!=null)last=i;});
+  t=last>=0?tokEnd(f[last].li,f[last].ti)+0.8:1.0;
+  for(var i=last+1;i<f.length;i++){
+    var x=f[i];
+    if(x.ti===0&&i>last+1)t+=0.7;
+    var len=Array.from(x.k.t).length,d=clamp(0.25+0.07*len,0.35,1.1);
+    x.k.start=r2(t);x.k.end=r2(t+d);t+=d;
+  }
+  cur=f.length;shown=-2;renderAll();
+}
+
+/* ---------- rendering ---------- */
+function renderTimeline(){
+  tl.textContent='';chipEls=[];var idx=0,frag=document.createDocumentFragment();
+  if(!lines.length){var e=document.createElement('div');e.className='status';e.textContent='วางเนื้อเพลงเพื่อเริ่มสร้างคำ';frag.appendChild(e);}
+  lines.forEach(function(L,li){
+    var row=document.createElement('div');row.className='line';
+    var ln=document.createElement('div');ln.className='ln';ln.textContent=pad(li+1);
+    var ch=document.createElement('div');ch.className='chips';
+    L.tokens.forEach(function(k){
+      var i=idx++,b=document.createElement('button');b.type='button';b.dataset.i=i;
+      b.className='chip'+(k.start!=null?' done':'')+(i===cur?' cur':'')+(i===sel?' sel':'');
+      var a=document.createElement('span');a.className='ct';a.textContent=k.t;
+      var m=document.createElement('span');m.className='cm';m.textContent=k.start!=null?tstr(k.start):'--:--.-';
+      b.appendChild(a);b.appendChild(m);ch.appendChild(b);chipEls[i]=b;
+    });
+    row.appendChild(ln);row.appendChild(ch);frag.appendChild(row);
+  });
+  tl.appendChild(frag);liveIdx=-1;
+  if(cur!==lastCur&&chipEls[cur]){
+    var row=chipEls[cur].closest('.line');
+    if(row.offsetTop<tl.scrollTop||row.offsetTop+row.offsetHeight>tl.scrollTop+tl.clientHeight)tl.scrollTop=Math.max(0,row.offsetTop-tl.clientHeight/3);
+  }
+  lastCur=cur;
+}
+function renderMeta(){
+  var f=flat(),done=f.filter(function(x){return x.k.start!=null;}).length;
+  $('#progress').textContent='ซิงก์แล้ว '+done+' / '+f.length+' คำ';
+  var nx=f[cur];$('#tapNext').textContent=nx?'คำถัดไป: '+nx.k.t:(f.length?'ซิงก์ครบแล้ว':'วางเนื้อเพลงก่อน');
+  var si=$('#selInfo');
+  if(sel>=0&&f[sel]){si.textContent='เลือก: '+f[sel].k.t+' · '+(f[sel].k.start!=null?f[sel].k.start.toFixed(2)+' วิ':'ยังไม่มีเวลา');}
+  else si.textContent='ยังไม่ได้เลือกคำ';
+  var end=0;f.forEach(function(x){if(x.k.start!=null)end=Math.max(end,tokEnd(x.li,x.ti));});
+  if(clock.virt){clock.dur=Math.max(60,Math.ceil(end+8));$('#seek').max=clock.dur;}
+  $('#sampleNote').hidden=ta.value.trim()!==SAMPLE||!clock.virt;
+}
+function renderAll(){renderTimeline();renderMeta();buildStage();scheduleExport();}
+
+var spansA=[],lastP=[];
+function buildStage(){
+  stage.textContent='';spansA=[];lastP=[];
+  if(!lines.length){var e=document.createElement('div');e.className='srow empty';e.textContent='วางเนื้อเพลงเพื่อดูตัวอย่างซับ';stage.appendChild(e);shown=-3;return;}
+  var c=currentLine(clock.time());shown=c;
+  var a=document.createElement('div');a.className='srow a';
+  lines[c].tokens.forEach(function(k){var s=document.createElement('span');s.className='w';s.textContent=k.t+(k.sp?' ':'');a.appendChild(s);spansA.push(s);lastP.push(-1);});
+  stage.appendChild(a);
+  if(lines[c+1]){var b=document.createElement('div');b.className='srow b';b.textContent=lines[c+1].tokens.map(function(k){return k.t+(k.sp?' ':'');}).join('');stage.appendChild(b);}
+}
+function currentLine(t){
+  var c=-1;
+  for(var i=0;i<lines.length;i++){var s=lines[i].tokens[0].start;if(s!=null&&s<=t+0.6)c=i;}
+  return c<0?0:c;
+}
+function updateStage(t){
+  if(!lines.length)return;
+  var c=currentLine(t);if(c!==shown)buildStage();
+  var L=lines[shown];
+  for(var i=0;i<spansA.length;i++){
+    var k=L.tokens[i],p=0;
+    if(k.start!=null){var e=tokEnd(shown,i);p=t<=k.start?0:(t>=e?100:(t-k.start)/(e-k.start)*100);}
+    if(Math.abs(p-lastP[i])>0.2){lastP[i]=p;spansA[i].style.setProperty('--p',p.toFixed(1));}
+  }
+  var f=flat(),li=-1,fi=0;
+  for(var a=0;a<lines.length&&li<0;a++)for(var b=0;b<lines[a].tokens.length;b++,fi++){
+    var kk=lines[a].tokens[b];if(kk.start!=null&&t>=kk.start&&t<tokEnd(a,b)){li=fi;break;}
+  }
+  if(li!==liveIdx){if(chipEls[liveIdx])chipEls[liveIdx].classList.remove('live');if(chipEls[li])chipEls[li].classList.add('live');liveIdx=li;}
+}
+var ICON_PLAY='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z"/></svg>',ICON_PAUSE='<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 2.5h3v11h-3zM9.5 2.5h3v11h-3z"/></svg>';
+var lastPlaying=null;
+function updateTransport(t){
+  var d=clock.duration();
+  $('#clockTxt').textContent=tstr(t)+' / '+tstr(d);
+  if(!seeking){var sk=$('#seek');sk.max=d||90;sk.value=t;}
+  var pl=clock.isPlaying();if(pl!==lastPlaying){$('#play').innerHTML=pl?ICON_PAUSE:ICON_PLAY;lastPlaying=pl;}
+}
+function frame(){var t=clock.time();updateTransport(t);updateStage(t);requestAnimationFrame(frame);}
+
+/* ---------- exports ---------- */
+function syncedLines(){var o=[];lines.forEach(function(L,li){if(L.tokens.every(function(k){return k.start!=null;}))o.push(li);});return o;}
+function lineText(li){return lines[li].tokens.map(function(k,i){return k.t+((k.sp&&i<lines[li].tokens.length-1)?' ':'');}).join('');}
+function buildASS(sl){
+  var o=['[Script Info]','Title: '+st.name,'ScriptType: v4.00+','PlayResX: 1920','PlayResY: 1080','WrapStyle: 2','ScaledBorderAndShadow: yes','',
+  '[V4+ Styles]','Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding',
+  'Style: Default,'+st.font+','+st.size+','+hexAss(st.sung)+','+hexAss(st.unsung)+',&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,1,2,60,60,80,1','',
+  '[Events]','Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text'];
+  var prevEnd=0;
+  sl.forEach(function(li,n){
+    var L=lines[li],ls=L.tokens[0].start,le=tokEnd(li,L.tokens.length-1);
+    var nl=n+1<sl.length?lines[sl[n+1]].tokens[0].start:Infinity;
+    var hold=Math.max(0,Math.min(0.4,nl-le)),dEnd=le+hold;
+    var dStart=Math.min(ls,Math.max(prevEnd,ls-st.lead,0));prevEnd=dEnd;
+    var curCs=Math.round(dStart*100),txt='';
+    L.tokens.forEach(function(k,ti){
+      var sc=Math.round(k.start*100),ec=Math.round(tokEnd(li,ti)*100);
+      if(sc>curCs)txt+='{\\k'+(sc-curCs)+'}';
+      txt+='{\\kf'+Math.max(1,ec-sc)+'}'+k.t+((k.sp&&ti<L.tokens.length-1)?' ':'');
+      curCs=Math.max(curCs,ec);
+    });
+    o.push('Dialogue: 0,'+assT(dStart)+','+assT(dEnd)+',Default,,0,0,0,,'+txt);
+  });
+  return o.join('\n')+'\n';
+}
+function buildLRC(sl){
+  var o=['[ti:'+st.name+']'];
+  sl.forEach(function(li){
+    var L=lines[li],s='['+lrcT(L.tokens[0].start)+']';
+    L.tokens.forEach(function(k,ti){s+='<'+lrcT(k.start)+'>'+k.t+((k.sp&&ti<L.tokens.length-1)?' ':'');});
+    s+='<'+lrcT(tokEnd(li,L.tokens.length-1))+'>';o.push(s);
+  });
+  return o.join('\n')+'\n';
+}
+function buildSRT(sl){
+  var o=[];
+  sl.forEach(function(li,n){
+    var L=lines[li];
+    o.push((n+1)+'\n'+srtT(L.tokens[0].start)+' --> '+srtT(tokEnd(li,L.tokens.length-1))+'\n'+lineText(li)+'\n');
+  });
+  return o.join('\n');
+}
+var expT=null;
+function scheduleExport(){clearTimeout(expT);expT=setTimeout(function(){renderExport();persist();},140);}
+function renderExport(){
+  var sl=syncedLines(),skipped=lines.length-sl.length;
+  if(!sl.length){out.value='ยังไม่มีบรรทัดที่ซิงก์ครบ แตะซิงก์ให้ครบอย่างน้อยหนึ่งบรรทัด แล้วผลลัพธ์จะขึ้นที่นี่';return;}
+  out.value=fmtNow==='ass'?buildASS(sl):fmtNow==='lrc'?buildLRC(sl):buildSRT(sl);
+  $('#toast').textContent=skipped?'ข้าม '+skipped+' บรรทัดที่ยังซิงก์ไม่ครบ':'';
+}
+function toast(m){$('#toast').textContent=m;}
+
+/* ---------- persistence (per-viewer convenience) ---------- */
+function persist(){
+  try{
+    localStorage.setItem(KEY,JSON.stringify({lyrics:ta.value,st:st,toks:lines.map(function(L){return L.tokens.map(function(k){return [k.t,k.start,k.end];});})}));
+  }catch(e){}
+}
+function restore(){
+  try{
+    var raw=localStorage.getItem(KEY);if(!raw)return false;
+    var d=JSON.parse(raw);if(!d||typeof d.lyrics!=='string')return false;
+    Object.keys(st).forEach(function(k){if(d.st&&d.st[k]!=null)st[k]=d.st[k];});
+    ta.value=d.lyrics;rebuild();
+    if(d.toks){var f=flat(),fl=[];d.toks.forEach(function(L){L.forEach(function(k){fl.push(k);});});
+      f.forEach(function(x,i){var s=fl[i];if(s&&s[0]===x.k.t&&s[1]!=null){x.k.start=s[1];x.k.end=s[2];}});}
+    cur=firstPending();return true;
+  }catch(e){return false;}
+}
+
+/* ---------- audio ---------- */
+function loadFile(f){
+  if(!f)return;
+  if(clock.virt)clock.pause();
+  if(url)URL.revokeObjectURL(url);
+  url=URL.createObjectURL(f);au.src=url;au.load();
+  clock.virt=false;au.playbackRate=clock.rate;
+  $('#audioStatus').textContent='กำลังโหลด '+f.name+' ...';
+  $('#audioStatus').dataset.name=f.name;
+}
+au.addEventListener('loadedmetadata',function(){
+  $('#audioStatus').textContent=($('#audioStatus').dataset.name||'ไฟล์เสียง')+' · ยาว '+tstr(au.duration)+' นาที';
+  $('#seek').max=au.duration;renderMeta();
+});
+au.addEventListener('error',function(){
+  clock.virt=true;
+  $('#audioStatus').textContent='เล่นไฟล์นี้ไม่ได้ ลองไฟล์ MP3 หรือ M4A แทน ตอนนี้ใช้นาฬิกาจำลองอยู่';
+  renderMeta();
+});
+
+/* ---------- events ---------- */
+var fileEl=$('#file'),dz=$('#dz');
+fileEl.addEventListener('change',function(){loadFile(fileEl.files&&fileEl.files[0]);});
+['dragenter','dragover'].forEach(function(n){dz.addEventListener(n,function(e){e.preventDefault();dz.classList.add('over');});});
+['dragleave','drop'].forEach(function(n){dz.addEventListener(n,function(e){e.preventDefault();dz.classList.remove('over');});});
+dz.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)loadFile(f);});
+
+var lyT=null;
+ta.addEventListener('input',function(){clearTimeout(lyT);lyT=setTimeout(rebuild,220);});
+
+$('#play').addEventListener('click',function(){clock.isPlaying()?clock.pause():clock.play();});
+var sk=$('#seek');
+sk.addEventListener('pointerdown',function(){seeking=true;});
+sk.addEventListener('pointerup',function(){seeking=false;});
+sk.addEventListener('input',function(){clock.seek(parseFloat(sk.value));});
+$('#rate').addEventListener('change',function(e){clock.setRate(parseFloat(e.target.value));});
+$('#offset').addEventListener('input',function(e){st.offset=clamp(parseInt(e.target.value,10)||0,0,600);scheduleExport();});
+
+$('#tap').addEventListener('pointerdown',function(e){e.preventDefault();stamp();});
+$('#undo').addEventListener('click',undo);
+$('#endBtn').addEventListener('click',markEnd);
+$('#rough').addEventListener('click',fillRough);
+
+var clearArmed=false,clearT=null,clearBtn=$('#clear');
+clearBtn.addEventListener('click',function(){
+  if(!clearArmed){clearArmed=true;clearBtn.textContent='กดอีกครั้งเพื่อยืนยัน';clearT=setTimeout(function(){clearArmed=false;clearBtn.textContent='ล้างเวลาทั้งหมด';},3000);return;}
+  clearTimeout(clearT);clearArmed=false;clearBtn.textContent='ล้างเวลาทั้งหมด';
+  lines.forEach(function(L){L.tokens.forEach(function(k){k.start=null;k.end=null;});});
+  cur=0;sel=-1;shown=-2;renderAll();
+});
+tl.addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  var i=parseInt(b.dataset.i,10),f=flat();sel=i;cur=i;
+  if(f[i]&&f[i].k.start!=null)clock.seek(Math.max(0,f[i].k.start-0.8));
+  shown=-2;renderAll();
+});
+function nudge(d){
+  var f=flat();if(sel<0||!f[sel]||f[sel].k.start==null)return;
+  var k=f[sel].k;k.start=Math.max(0,r2(k.start+d));if(k.end!=null)k.end=r2(k.end+d);
+  shown=-2;renderAll();
+}
+$('#nm').addEventListener('click',function(){nudge(-0.05);});
+$('#np').addEventListener('click',function(){nudge(0.05);});
+
+function typing(t){return t&&t.matches&&t.matches('textarea,select,input:not([type=range]):not([type=color])');}
+document.addEventListener('keydown',function(e){
+  var t=e.target;if(typing(t)||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.code==='Space'){e.preventDefault();if(!e.repeat)stamp();}
+  else if(e.key==='Backspace'){e.preventDefault();undo();}
+  else if(e.key==='Enter'&&t.tagName!=='BUTTON'){e.preventDefault();markEnd();}
+  else if((e.key==='p'||e.key==='P')&&t.tagName!=='INPUT'){clock.isPlaying()?clock.pause():clock.play();}
+  else if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&!(t.type==='range')){e.preventDefault();clock.seek(clock.time()+(e.key==='ArrowLeft'?-3:3));}
+});
+document.addEventListener('keyup',function(e){if(e.code==='Space'&&!typing(e.target))e.preventDefault();});
+
+/* settings */
+function bindSet(id,key,conv){
+  $(id).addEventListener('input',function(e){st[key]=conv?conv(e.target.value):e.target.value;applyStyle();scheduleExport();});
+}
+bindSet('#name','name',function(v){return v.trim()||'my-karaoke';});
+bindSet('#font','font',function(v){return v.trim()||'Tahoma';});
+bindSet('#size','size',function(v){return clamp(parseInt(v,10)||72,20,200);});
+bindSet('#lead','lead',function(v){return clamp(parseFloat(v)||0,0,3);});
+bindSet('#csung','sung');
+bindSet('#cunsung','unsung');
+function applyStyle(){stage.style.setProperty('--sung',st.sung);stage.style.setProperty('--unsung',st.unsung);}
+function syncInputs(){
+  $('#name').value=st.name;$('#font').value=st.font;$('#size').value=st.size;$('#lead').value=st.lead;
+  $('#csung').value=st.sung;$('#cunsung').value=st.unsung;$('#offset').value=st.offset;applyStyle();
+}
+
+/* export tabs, copy, save */
+Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(b){
+  b.addEventListener('click',function(){
+    fmtNow=b.dataset.fmt;
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
+    renderExport();
+  });
+});
+$('#copy').addEventListener('click',function(){
+  var txt=out.value;
+  function fallback(){out.focus();out.select();toast('เลือกข้อความแล้ว กด Ctrl+C หรือกดค้างเพื่อคัดลอก');}
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast('คัดลอกแล้ว');},fallback);}
+    else fallback();
+  }catch(e){fallback();}
+});
+var dl=null;
+(function(){
+  try{
+    var p=window.claude&&window.claude.use&&window.claude.use('downloads');
+    if(p&&p.then)p.then(function(d){dl=d||null;if(dl){$('#save').hidden=false;$('#saveHint').hidden=false;}},function(){});
+  }catch(e){}
+})();
+$('#save').addEventListener('click',function(){
+  if(!dl)return;
+  if(!syncedLines().length){toast('ยังไม่มีบรรทัดที่ซิงก์ครบให้บันทึก');return;}
+  var base=st.name.replace(/[\\\/:*?"<>|]/g,'_');
+  dl.save({filename:base+'.'+fmtNow+'.txt',data:out.value}).then(function(){toast('บันทึกแล้ว เปลี่ยนนามสกุลเป็น .'+fmtNow+' ก่อนใช้งาน');},function(err){
+    if(err&&err.code==='declined')return;
+    toast('บันทึกไม่สำเร็จ ใช้ปุ่มคัดลอกแทนได้');
+  });
+});
+
+/* ---------- boot ---------- */
+syncInputs();
+if(!restore()){ta.value=SAMPLE;rebuild();fillRough();}
+else{syncInputs();renderAll();}
+$('#play').innerHTML=ICON_PLAY;
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body></html>
